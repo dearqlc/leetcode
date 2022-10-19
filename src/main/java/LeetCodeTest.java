@@ -65,7 +65,7 @@ public class LeetCodeTest {
 
     @Test
     public void t3() {
-
+        System.out.println("Hello, World!");
     }
 
     @Test
