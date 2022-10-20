@@ -1,13 +1,11 @@
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author QLC
  * @Date 2022/9/20 17:37
- * @Description LeetCode测试单元
+ * @Description LeetCode单元测试
  */
 public class LeetCodeTest {
 
@@ -65,12 +63,45 @@ public class LeetCodeTest {
 
     @Test
     public void t3() {
-        System.out.println("Hello, World!");
+        int[] arr1 = new int[]{2,21,43,38,0,42,33,7,24,13,12,27,12,24,5,23,29,48,30,31};
+        int[] arr2 = new int[]{2,42,38,0,43,21};
+        Map<Integer, Integer> map = new HashMap<>(16);
+        int[] res = new int[arr1.length];
+        for (int num : arr1) {
+            if (map.containsKey(num)) {
+                map.put(num, map.get(num) + 1);
+            } else {
+                map.put(num, 1);
+            }
+        }
+        int pos1 = 0;
+        for (int num : arr2) {
+            if (map.get(num) != 0) {
+                for (int m = 0; m < map.get(num); m++) {
+                    res[pos1++] = num;
+                }
+            }
+            map.put(num, 0);
+        }
+        int[] ans = new int[arr1.length - pos1];
+        int pos2 = 0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (entry.getValue() != 0) {
+                for (int i = 0; i < entry.getValue(); i++) {
+                    ans[pos2++] = entry.getKey();
+                }
+            }
+        }
+        Arrays.sort(ans);
+        for (int num : ans) {
+            res[pos1++] = num;
+        }
+        System.out.println(Arrays.toString(res));
     }
 
     @Test
     public void t4() {
-
+        System.out.println("hello,world");
     }
 
     @Test
