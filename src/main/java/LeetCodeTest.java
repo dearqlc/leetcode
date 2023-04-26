@@ -205,18 +205,21 @@ public class LeetCodeTest {
     }
 
     @Test
-    public void t10() throws ParseException {
+    public void t10() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date d1 = dateFormat.parse("2000-12-1");
-        Date d2 = dateFormat.parse("2001-12-1");
-        Date d3 = dateFormat.parse("2002-12-1");
-        List<Person> people1 = new ArrayList<Person>() {{
-            add(new Person("张三", d1, 23));
-            add(new Person("李四", d2, 22));
-            add(new Person("王五", d3, 21));
-        }};
-        System.out.println(people1);
-        System.out.println(TimeUnit.SECONDS.toMillis(5));
+        try {
+            Date d1 = dateFormat.parse("2000-12-1");
+            Date d2 = dateFormat.parse("2001-12-1");
+            Date d3 = dateFormat.parse("2002-12-1");
+            List<Person> people1 = new ArrayList<Person>() {{
+                add(new Person("张三", d1, 23));
+                add(new Person("李四", d2, 22));
+                add(new Person("王五", d3, 21));
+            }};
+            System.out.println(people1);
+            System.out.println(TimeUnit.SECONDS.toMillis(5));
+        } catch (Exception ignore){
+        }
     }
 
     @Test
@@ -257,12 +260,14 @@ public class LeetCodeTest {
 
     @Test
     public void t16() {
-
+        int integer = 100000;
+        BigDecimal bigDecimal = new BigDecimal(integer);
+        System.out.println(bigDecimal);
     }
 
     @Test
-    public void t17() {
-
+    public void t17(){
+        System.out.println(7 / 8);
     }
 
     @Test

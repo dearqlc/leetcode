@@ -14,8 +14,8 @@ public enum UsageStatus {
     USED("Y", "使用中"),
     UNUSED("N", "未使用");
 
-    private String code;
-    private String desc;
+    private final String code;
+    private final String desc;
 
     public static UsageStatus getByCode(String code) {
         if (StringUtils.isBlank(code)) {

@@ -1,6 +1,7 @@
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -9,9 +10,11 @@ import java.util.Date;
  * @Date 2022/12/1 10:11
  * @Description
  */
+
 @Data
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Person {
 
     private String name;
