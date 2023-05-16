@@ -33,8 +33,8 @@ class ApplicationStartUpTest {
     @Test
     public void syncAgreement() {
         // 获取Url
-        String signatureUrl = HttpConstant.PREFIX + HttpConstant.PROD_URL + HttpConstant.SIGNATURE;
-        String protocolUrl = HttpConstant.PREFIX + HttpConstant.PROD_URL + HttpConstant.PROTOCOL;
+        String signatureUrl = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.SIGNATURE;
+        String protocolUrl = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.PROTOCOL;
         // 获取restTemplate
         RestTemplate restTemplate = new RestTemplate();
         // 解析Excel

@@ -9,5 +9,5 @@ public class HttpConstant {
     public static final String PREFIX = "http://";
     public static final String SIGNATURE = "/irdp/sign/getSignature";
     public static final String PROTOCOL = "/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
-    public static final String PROD_URL = "10.206.192.117:80";
+    public static final String PROD_HOST = "10.206.192.117:80";
 }
