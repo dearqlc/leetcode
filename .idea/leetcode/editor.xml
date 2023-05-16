@@ -223,6 +223,17 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../../LeetCode/leetcode/editor/cn/[1105]填充书架.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="contentPath" value="$PROJECT_DIR$/../../LeetCode/leetcode/editor/cn/doc/content/[1105]填充书架.md" />
+              <option name="frontendQuestionId" value="leetcode.cn1105" />
+              <option name="host" value="leetcode.cn" />
+              <option name="path" value="$PROJECT_DIR$/../../LeetCode/leetcode/editor/cn/[1105]填充书架.java" />
+              <option name="titleSlug" value="filling-bookcase-shelves" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../../LeetCode/leetcode/editor/cn/[1184]公交站间的距离.java">
           <value>
             <LeetcodeEditor>
