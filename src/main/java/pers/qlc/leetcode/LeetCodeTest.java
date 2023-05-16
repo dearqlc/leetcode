@@ -1,6 +1,6 @@
 package pers.qlc.leetcode;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import pers.qlc.leetcode.entity.Person;
 import pers.qlc.leetcode.enums.UsageStatus;
 
