@@ -37,30 +37,35 @@ class ApplicationStartUpTest {
     @Autowired
     private IDeskService deskService;
 
-    @Test
-    public void dbTest() {
-        LambdaQueryWrapper<DeskModel> deskQueryWrapper = new LambdaQueryWrapper<>();
-        deskQueryWrapper.eq(DeskModel::getDeskId, 1);
-        List<DeskModel> list = deskService.list(deskQueryWrapper);
-        System.out.println(list);
-    }
+    /**
+     * 获取restTemplate
+     */
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    /**
+     * Excel文件地址
+     */
+    private static final String PATH_NAME = "E:\\xxx.xlsx";
+
+    /**
+     * 签名地址
+     */
+    private static final String SIGNATURE_URL = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.SIGNATURE;
+
+    /**
+     * 同步协议地址
+     */
+    private static final String PROTOCOL_URL = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.PROTOCOL;
 
     /**
      * 批量同步协议到议价平台
      */
     @Test
     public void syncAgreement() {
-        // 获取restTemplate
-        RestTemplate restTemplate = new RestTemplate();
-
-        // 获取Url
-        String signatureUrl = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.SIGNATURE;
-        String protocolUrl = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.PROTOCOL;
-
         // 解析Excel
-        String pathName = "E:\\xxx.xlsx";
-        File file = new File(pathName);
-        List<AgreementDTO> agreementList = ExcelUtils.readExcelWithCheck(AgreementDTO.class, file,
+        List<AgreementDTO> agreementList = ExcelUtils.readExcelWithCheck(
+                AgreementDTO.class,
+                new File(PATH_NAME),
                 (t, value) -> ((AgreementDTO) t).setResult(value),
                 (t, value) -> ((AgreementDTO) t).setFailReason(value)
         );
@@ -69,8 +74,9 @@ class ApplicationStartUpTest {
         for (AgreementDTO agreement : agreementList) {
             // 获取签名
             SignatureRequestDTO signatureRequestDTO = new SignatureRequestDTO(100);
-            ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(signatureUrl, signatureRequestDTO, SignatureResponseDTO.class);
+            ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(SIGNATURE_URL, signatureRequestDTO, SignatureResponseDTO.class);
             if (response.getBody() == null) {
+                log.info("获取签名失败！");
                 return;
             }
 
@@ -95,9 +101,19 @@ class ApplicationStartUpTest {
 
             // 同步到议价
             log.info("同步合作伙伴协议信息到议价平台, request: {}", JSON.toJSONString(protocolRequestDTO, true));
-            ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(protocolUrl, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
+            ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
             log.info("同步合作伙伴协议信息到议价平台, response:{}", JSON.toJSONString(postForEntity.getBody(), true));
         }
     }
 
+    /**
+     * 数据库测试方法
+     */
+    @Test
+    public void dbTest() {
+        LambdaQueryWrapper<DeskModel> deskQueryWrapper = new LambdaQueryWrapper<>();
+        deskQueryWrapper.eq(DeskModel::getDeskId, 1);
+        List<DeskModel> list = deskService.list(deskQueryWrapper);
+        System.out.println(list);
+    }
 }

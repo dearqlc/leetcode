@@ -1,4 +1,4 @@
-package pers.qlc.leetcode;
+package leetcode;
 
 import org.junit.Test;
 import pers.qlc.leetcode.entity.Person;

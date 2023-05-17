@@ -696,6 +696,17 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../../LeetCode/leetcode/editor/cn/[2446]判断两个事件是否存在冲突.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="contentPath" value="$PROJECT_DIR$/../../LeetCode/leetcode/editor/cn/doc/content/[2446]判断两个事件是否存在冲突.md" />
+              <option name="frontendQuestionId" value="leetcode.cn2446" />
+              <option name="host" value="leetcode.cn" />
+              <option name="path" value="$PROJECT_DIR$/../../LeetCode/leetcode/editor/cn/[2446]判断两个事件是否存在冲突.java" />
+              <option name="titleSlug" value="determine-if-two-events-have-conflict" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../../LeetCode/leetcode/editor/cn/[26]删除有序数组中的重复项.java">
           <value>
             <LeetcodeEditor>
