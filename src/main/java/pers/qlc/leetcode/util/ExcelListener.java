@@ -22,12 +22,12 @@ public class ExcelListener extends AnalysisEventListener<Object> {
     /**
      * 数据体
      */
-    private List<Object> dataList = new ArrayList<>();
+    private final List<Object> dataList = new ArrayList<>();
 
     /**
      * 这两条用来校验表头信息
      */
-    private List<String> headList = new ArrayList();
+    private final List<String> headList = new ArrayList();
 
     /**
      * 模板类
@@ -37,7 +37,7 @@ public class ExcelListener extends AnalysisEventListener<Object> {
     /**
      * 模板不匹配消息
      */
-    private StringBuilder message = new StringBuilder();
+    private final StringBuilder message = new StringBuilder();
 
     public ExcelListener() {
         super();
@@ -75,7 +75,7 @@ public class ExcelListener extends AnalysisEventListener<Object> {
         for (Integer i : headMap.keySet()) {
             if (!propertySet.contains(headMap.get(i))) {
                 int index = i + 1;
-                message.append("表头第" + index + "列【" + headMap.get(i) + "】与模板不一致;");
+                message.append("表头第").append(index).append("列【").append(headMap.get(i)).append("】与模板不一致;");
             }
         }
         if (StringUtils.isNotBlank(message)) {
@@ -110,9 +110,7 @@ public class ExcelListener extends AnalysisEventListener<Object> {
             //获取ExcelProperty注解
             ExcelProperty property = field.getAnnotation(ExcelProperty.class);
             String[] value = property.value();
-            for (String s : value) {
-                propertySet.add(s);
-            }
+            Collections.addAll(propertySet, value);
         }
         //获取父类属性
         Class superclass = classes.getSuperclass();

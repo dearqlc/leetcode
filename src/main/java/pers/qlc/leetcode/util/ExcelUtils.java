@@ -37,7 +37,7 @@ public class ExcelUtils {
 
         Map<String, Prop> classProperty = getClassProperty(clazz);
 
-        StringBuilder failReason = new StringBuilder("");
+        StringBuilder failReason = new StringBuilder();
         for (Object o : dataList) {
             T data = (T) o;
             t.add(data);

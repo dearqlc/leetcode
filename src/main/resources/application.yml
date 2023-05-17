@@ -1,0 +1,17 @@
+spring:
+  #数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/leetcode?useUnicode=true&characterEncoding=utf-8&useSSL=false
+
+#配置项目访问端口和地址
+server:
+  port: 8080
+
+#配置日志信息
+logging:
+  level:
+    root: warn
+    pers.qlc.leetcode: debug

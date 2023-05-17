@@ -9,7 +9,7 @@ import lombok.Data;
  * @Description :
  */
 @Data
-public class YiJiaDTO {
+public class AgreementDTO {
     @ExcelProperty(value = "role_id")
     private String roleId;
 

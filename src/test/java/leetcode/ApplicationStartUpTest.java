@@ -1,21 +1,25 @@
 package leetcode;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import pers.qlc.leetcode.ApplicationStartUp;
 import pers.qlc.leetcode.constant.HttpConstant;
-import pers.qlc.leetcode.dto.YiJiaDTO;
+import pers.qlc.leetcode.dto.AgreementDTO;
 import pers.qlc.leetcode.dto.request.PartnerProtocolRequestDTO;
 import pers.qlc.leetcode.dto.request.ProtocolRequestDataDTO;
 import pers.qlc.leetcode.dto.request.SignatureRequestDTO;
 import pers.qlc.leetcode.dto.response.PartnerAgrSyncResponseDTO;
 import pers.qlc.leetcode.dto.response.SignatureResponseDTO;
+import pers.qlc.leetcode.model.DeskModel;
+import pers.qlc.leetcode.service.IDeskService;
 import pers.qlc.leetcode.util.ExcelUtils;
 
 import java.io.File;
@@ -30,27 +34,46 @@ import java.util.List;
 @SpringBootTest(classes = ApplicationStartUp.class)
 class ApplicationStartUpTest {
 
+    @Autowired
+    private IDeskService deskService;
+
+    @Test
+    public void dbTest() {
+        LambdaQueryWrapper<DeskModel> deskQueryWrapper = new LambdaQueryWrapper<>();
+        deskQueryWrapper.eq(DeskModel::getDeskId, 1);
+        List<DeskModel> list = deskService.list(deskQueryWrapper);
+        System.out.println(list);
+    }
+
+    /**
+     * 批量同步协议到议价平台
+     */
     @Test
     public void syncAgreement() {
+        // 获取restTemplate
+        RestTemplate restTemplate = new RestTemplate();
+
         // 获取Url
         String signatureUrl = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.SIGNATURE;
         String protocolUrl = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.PROTOCOL;
-        // 获取restTemplate
-        RestTemplate restTemplate = new RestTemplate();
+
         // 解析Excel
         String pathName = "E:\\xxx.xlsx";
         File file = new File(pathName);
-        List<YiJiaDTO> list = ExcelUtils.readExcelWithCheck(YiJiaDTO.class, file,
-                (t, value) -> ((YiJiaDTO) t).setResult(value),
-                (t, value) -> ((YiJiaDTO) t).setFailReason(value)
+        List<AgreementDTO> agreementList = ExcelUtils.readExcelWithCheck(AgreementDTO.class, file,
+                (t, value) -> ((AgreementDTO) t).setResult(value),
+                (t, value) -> ((AgreementDTO) t).setFailReason(value)
         );
-        for (YiJiaDTO yiJiaDTO : list) {
+
+        // 遍历Excel数据
+        for (AgreementDTO agreement : agreementList) {
             // 获取签名
             SignatureRequestDTO signatureRequestDTO = new SignatureRequestDTO(100);
             ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(signatureUrl, signatureRequestDTO, SignatureResponseDTO.class);
             if (response.getBody() == null) {
                 return;
             }
+
             // 填充签名数据
             PartnerProtocolRequestDTO protocolRequestDTO = new PartnerProtocolRequestDTO();
             protocolRequestDTO.setHost(response.getBody().getData().getHost());
@@ -58,16 +81,18 @@ class ApplicationStartUpTest {
             protocolRequestDTO.setAccessKey(response.getBody().getData().getAccessKey());
             protocolRequestDTO.setSignature(response.getBody().getData().getSignature());
             protocolRequestDTO.setExpiretime(response.getBody().getData().getExpiretime());
+
             // 填充合约数据
             ProtocolRequestDataDTO data = new ProtocolRequestDataDTO();
             data.setCarCount(1);
-            data.setOrgcd(yiJiaDTO.getOrgCode());
-            data.setPartnerCode(yiJiaDTO.getRoleId());
-            data.setPartnerName(yiJiaDTO.getPartnerName());
-            data.setAgentProtocolCode(yiJiaDTO.getAgreementNo());
-            data.setEndDate(yiJiaDTO.getDateEnd().substring(0, 10));
-            data.setStartDate(yiJiaDTO.getDateStart().substring(0, 10));
+            data.setOrgcd(agreement.getOrgCode());
+            data.setPartnerCode(agreement.getRoleId());
+            data.setPartnerName(agreement.getPartnerName());
+            data.setAgentProtocolCode(agreement.getAgreementNo());
+            data.setEndDate(agreement.getDateEnd().substring(0, 10));
+            data.setStartDate(agreement.getDateStart().substring(0, 10));
             protocolRequestDTO.setData(data);
+
             // 同步到议价
             log.info("同步合作伙伴协议信息到议价平台, request: {}", JSON.toJSONString(protocolRequestDTO, true));
             ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(protocolUrl, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
