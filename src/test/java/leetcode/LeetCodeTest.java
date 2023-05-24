@@ -8,6 +8,12 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -18,7 +24,6 @@ import java.util.stream.Collectors;
  * @Description LeetCode单元测试
  */
 public class LeetCodeTest {
-
     @Test
     public void t0() {
         String s = " practice   makes   perfect";
@@ -274,9 +279,21 @@ public class LeetCodeTest {
         System.out.println(7 / 8);
     }
 
+    /**
+     * LocalDate使用方法
+     */
     @Test
     public void t18() {
-
+        LocalDate now = LocalDate.now();
+        LocalDate birthday = LocalDate.of(2000, 7, 17);
+        int year = now.get(ChronoField.YEAR);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        LocalDate localDate = localDateTime.toLocalDate();
+        LocalTime localTime = localDateTime.toLocalTime();
+        System.out.println(localDateTime + " " + localDate + " " + localTime);
+        System.out.println(birthday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        // 计算两个日子之间隔了几天
+        System.out.println(ChronoUnit.DAYS.between(LocalDate.of(2000, 7, 17), LocalDate.now()));
     }
 
     @Test
@@ -303,5 +320,4 @@ public class LeetCodeTest {
     public void t23() {
 
     }
-
 }

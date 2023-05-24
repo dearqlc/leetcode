@@ -15,22 +15,27 @@ public class PartnerProtocolRequestDTO {
      * 过期时间
      */
     private String expiretime;
+
     /**
      * accessKey
      */
     private String accessKey;
+
     /**
      * 签名
      */
     private String signature;
+
     /**
      * 服务器IP地址
      */
     private String host;
+
     /**
      * 策略
      */
     private String policy;
+
     /**
      * data
      */

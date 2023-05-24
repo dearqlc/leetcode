@@ -13,10 +13,12 @@ public class SignatureResponseDTO {
      * 返回状态
      */
     private Integer code;
+
     /**
      * 返回提示消息
      */
     private String msg;
+
     /**
      * 返回数据体
      */

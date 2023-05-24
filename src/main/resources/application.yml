@@ -13,5 +13,5 @@ server:
 #配置日志信息
 logging:
   level:
-    root: warn
+    root: error
     pers.qlc.leetcode: debug

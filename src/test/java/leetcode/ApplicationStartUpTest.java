@@ -33,7 +33,6 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApplicationStartUp.class)
 class ApplicationStartUpTest {
-
     @Autowired
     private IDeskService deskService;
 
@@ -48,14 +47,24 @@ class ApplicationStartUpTest {
     private static final String PATH_NAME = "E:\\xxx.xlsx";
 
     /**
-     * 签名地址
+     * PROD签名地址
      */
-    private static final String SIGNATURE_URL = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.SIGNATURE;
+    private static final String PROD_SIGNATURE_URL = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.SIGNATURE;
 
     /**
-     * 同步协议地址
+     * PROD同步协议地址
      */
-    private static final String PROTOCOL_URL = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.PROTOCOL;
+    private static final String PROD_PROTOCOL_URL = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.PROTOCOL;
+
+    /**
+     * UAT签名地址
+     */
+    private static final String UAT_SIGNATURE_URL = HttpConstant.PREFIX + HttpConstant.UAT_HOST + HttpConstant.SIGNATURE;
+
+    /**
+     * UAT同步协议地址
+     */
+    private static final String UAT_PROTOCOL_URL = HttpConstant.PREFIX + HttpConstant.UAT_HOST + HttpConstant.PROTOCOL;
 
     /**
      * 批量同步协议到议价平台
@@ -74,7 +83,7 @@ class ApplicationStartUpTest {
         for (AgreementDTO agreement : agreementList) {
             // 获取签名
             SignatureRequestDTO signatureRequestDTO = new SignatureRequestDTO(100);
-            ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(SIGNATURE_URL, signatureRequestDTO, SignatureResponseDTO.class);
+            ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(PROD_SIGNATURE_URL, signatureRequestDTO, SignatureResponseDTO.class);
             if (response.getBody() == null) {
                 log.info("获取签名失败！");
                 return;
@@ -101,7 +110,7 @@ class ApplicationStartUpTest {
 
             // 同步到议价
             log.info("同步合作伙伴协议信息到议价平台, request: {}", JSON.toJSONString(protocolRequestDTO, true));
-            ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
+            ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROD_PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
             log.info("同步合作伙伴协议信息到议价平台, response:{}", JSON.toJSONString(postForEntity.getBody(), true));
         }
     }

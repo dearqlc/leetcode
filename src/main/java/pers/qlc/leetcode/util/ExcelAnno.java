@@ -9,11 +9,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface ExcelAnno {
-
     boolean required() default true;
 
     String[] rules() default {""};
 
     Class<? extends Converter> converter() default AutoConverter.class;
-
 }

@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class ExcelUtils {
-
     /**
      * 解析EXCEL 并根据注解完成必填校验及正则规则校验
      * 根据setResult操作设置校验结果
@@ -140,5 +139,4 @@ public class ExcelUtils {
         private String[] rules;
         private String name;
     }
-
 }

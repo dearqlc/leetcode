@@ -19,7 +19,6 @@ import java.util.Date;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 public class DeskModel extends Model {
-
     /**
      * 餐桌id
      */

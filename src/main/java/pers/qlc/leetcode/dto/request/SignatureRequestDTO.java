@@ -18,5 +18,4 @@ public class SignatureRequestDTO {
      * 服务代码
      */
     private Integer serviceCode;
-
 }

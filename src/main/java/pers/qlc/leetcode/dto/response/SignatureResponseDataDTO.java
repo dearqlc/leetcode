@@ -13,18 +13,22 @@ public class SignatureResponseDataDTO {
      * accessKey
      */
     private String accessKey;
+
     /**
      * 服务器IP地址
      */
     private String host;
+
     /**
      * 策略
      */
     private String policy;
+
     /**
      * 签名
      */
     private String signature;
+
     /**
      * 过期时间
      */

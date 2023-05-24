@@ -17,30 +17,37 @@ public class ProtocolRequestDataDTO {
      * 机构
      */
     private String orgcd;
+
     /**
      * 合作伙伴代码
      */
     private String partnerCode;
+
     /**
      * 合作伙伴名称
      */
     private String partnerName;
+
     /**
      * 协议号
      */
     private String agentProtocolCode;
+
     /**
      * 服务代码
      */
     private String serviceCode;
+
     /**
      * 车俩数
      */
     private Integer carCount;
+
     /**
      * 生效日期
      */
     private String startDate;
+
     /**
      * 失效日期
      */

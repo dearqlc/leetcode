@@ -13,6 +13,7 @@ public class PartnerAgrSyncResponseDTO {
      * 返回信息
      */
     private String message;
+
     /**
      * 返回状态
      */
