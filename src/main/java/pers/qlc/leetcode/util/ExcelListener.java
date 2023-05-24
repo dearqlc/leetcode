@@ -30,14 +30,14 @@ public class ExcelListener extends AnalysisEventListener<Object> {
     private final List<String> headList = new ArrayList();
 
     /**
-     * 模板类
-     */
-    private Class classes;
-
-    /**
      * 模板不匹配消息
      */
     private final StringBuilder message = new StringBuilder();
+
+    /**
+     * 模板类
+     */
+    private Class classes;
 
     public ExcelListener() {
         super();

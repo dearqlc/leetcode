@@ -34,14 +34,6 @@ import java.util.List;
 @SpringBootTest(classes = ApplicationStartUp.class)
 class ApplicationStartUpTest {
 
-    @Autowired
-    private IDeskService deskService;
-
-    /**
-     * 获取restTemplate
-     */
-    private final RestTemplate restTemplate = new RestTemplate();
-
     /**
      * Excel文件地址
      */
@@ -66,6 +58,14 @@ class ApplicationStartUpTest {
      * UAT同步协议地址
      */
     private static final String UAT_PROTOCOL_URL = HttpConstant.PREFIX + HttpConstant.UAT_HOST + HttpConstant.PROTOCOL;
+
+    /**
+     * 获取restTemplate
+     */
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    @Autowired
+    private IDeskService deskService;
 
     /**
      * 批量同步协议到议价平台
