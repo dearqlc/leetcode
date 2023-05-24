@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class PartnerAgrSyncResponseDTO {
+
     /**
      * 返回信息
      */
@@ -18,4 +19,5 @@ public class PartnerAgrSyncResponseDTO {
      * 返回状态
      */
     private Integer code;
+
 }

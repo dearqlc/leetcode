@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
  * @Description LeetCode单元测试
  */
 public class LeetCodeTest {
+
     @Test
     public void t0() {
         String s = " practice   makes   perfect";
@@ -320,4 +321,5 @@ public class LeetCodeTest {
     public void t23() {
 
     }
+
 }

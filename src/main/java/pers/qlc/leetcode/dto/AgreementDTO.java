@@ -10,6 +10,7 @@ import lombok.Data;
  */
 @Data
 public class AgreementDTO {
+
     @ExcelProperty(value = "role_id")
     private String roleId;
 
@@ -33,4 +34,5 @@ public class AgreementDTO {
 
     @ExcelProperty(value = "失败原因")
     private String failReason;
+
 }

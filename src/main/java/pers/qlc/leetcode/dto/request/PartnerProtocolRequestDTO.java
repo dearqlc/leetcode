@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PartnerProtocolRequestDTO {
+
     /**
      * 过期时间
      */
@@ -48,4 +49,5 @@ public class PartnerProtocolRequestDTO {
         this.host = host;
         this.policy = policy;
     }
+
 }

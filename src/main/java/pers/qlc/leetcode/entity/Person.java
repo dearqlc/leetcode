@@ -18,6 +18,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Person {
+
     private String name;
 
     private Date birthday;
@@ -31,4 +32,5 @@ public class Person {
                 ", age=" + age +
                 '}';
     }
+
 }

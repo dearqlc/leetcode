@@ -19,6 +19,7 @@ import java.util.Date;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 public class DeskModel extends Model {
+
     /**
      * 餐桌id
      */
@@ -54,4 +55,5 @@ public class DeskModel extends Model {
      * 删除标志
      */
     private Integer del;
+
 }

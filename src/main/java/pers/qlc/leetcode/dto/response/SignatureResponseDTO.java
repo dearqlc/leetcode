@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class SignatureResponseDTO {
+
     /**
      * 返回状态
      */
@@ -23,4 +24,5 @@ public class SignatureResponseDTO {
      * 返回数据体
      */
     private SignatureResponseDataDTO data;
+
 }

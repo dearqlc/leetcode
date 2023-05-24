@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class SignatureResponseDataDTO {
+
     /**
      * accessKey
      */
@@ -33,4 +34,5 @@ public class SignatureResponseDataDTO {
      * 过期时间
      */
     private String expiretime;
+
 }

@@ -18,6 +18,7 @@ import java.util.*;
  * @author 263425418814573784
  */
 public class ExcelListener extends AnalysisEventListener<Object> {
+
     /**
      * 数据体
      */
@@ -117,4 +118,5 @@ public class ExcelListener extends AnalysisEventListener<Object> {
             getClassProperty(superclass, propertySet);
         }
     }
+
 }

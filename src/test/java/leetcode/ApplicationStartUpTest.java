@@ -33,6 +33,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApplicationStartUp.class)
 class ApplicationStartUpTest {
+
     @Autowired
     private IDeskService deskService;
 
@@ -125,4 +126,5 @@ class ApplicationStartUpTest {
         List<DeskModel> list = deskService.list(deskQueryWrapper);
         System.out.println(list);
     }
+
 }

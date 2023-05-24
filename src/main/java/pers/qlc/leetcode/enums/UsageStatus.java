@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 @Getter
 @AllArgsConstructor
 public enum UsageStatus {
+
     USED("Y", "使用中"),
     UNUSED("N", "未使用");
 
@@ -29,4 +30,5 @@ public enum UsageStatus {
         }
         return null;
     }
+
 }

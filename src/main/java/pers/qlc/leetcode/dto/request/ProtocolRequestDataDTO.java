@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProtocolRequestDataDTO {
+
     /**
      * 机构
      */
@@ -52,4 +53,5 @@ public class ProtocolRequestDataDTO {
      * 失效日期
      */
     private String endDate;
+
 }
