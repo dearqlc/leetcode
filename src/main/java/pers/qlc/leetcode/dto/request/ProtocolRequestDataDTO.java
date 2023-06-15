@@ -54,4 +54,29 @@ public class ProtocolRequestDataDTO {
      */
     private String endDate;
 
+    /**
+     * 渠道类型
+     */
+    private String orgChannel;
+
+    /**
+     * 价费类型：
+     * 1价费非价费
+     * 2价费（传递值）
+     * 3非加费
+     */
+    private String isPriceFee;
+
+    /**
+     * 版本号:默认0
+     */
+    private String partnerVersionNo;
+
+    /**
+     * 是否4s店：
+     * 1:是
+     * 0:否
+     */
+    private String partnerSystemType;
+
 }

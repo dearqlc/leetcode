@@ -65,6 +65,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.30</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.toolkit.common</groupId>
+            <artifactId>toolkit-common-lang</artifactId>
+            <version>1.1.5</version>
+        </dependency>
     </dependencies>
 
     <build>

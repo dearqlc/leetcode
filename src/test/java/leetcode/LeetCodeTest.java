@@ -1,5 +1,6 @@
 package leetcode;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import pers.qlc.leetcode.entity.Person;
 import pers.qlc.leetcode.enums.UsageStatus;
@@ -291,7 +292,7 @@ public class LeetCodeTest {
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDate localDate = localDateTime.toLocalDate();
         LocalTime localTime = localDateTime.toLocalTime();
-        System.out.println(localDateTime + " " + localDate + " " + localTime);
+        System.out.println(localDateTime + "   " + localDate + "   " + localTime);
         System.out.println(birthday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         // 计算两个日子之间隔了几天
         System.out.println(ChronoUnit.DAYS.between(LocalDate.of(2000, 7, 17), LocalDate.now()));
@@ -299,26 +300,73 @@ public class LeetCodeTest {
 
     @Test
     public void t19() {
-
+        List<String> stringList = Arrays.asList("1", "2", "2");
+        System.out.println(stringList);
+        HashSet<String> strings = new HashSet<>(stringList);
+        System.out.println(strings);
     }
 
     @Test
-    public void t20() {
-
+    public void t20() throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date d1 = dateFormat.parse("2000-12-1");
+        Date d2 = dateFormat.parse("2001-12-1");
+        Date d3 = dateFormat.parse("2002-12-1");
+        List<Person> people1 = new ArrayList<Person>() {{
+            add(new Person("张三", d1, 23));
+            add(new Person("李四", d2, 22));
+            add(new Person("王五", d3, 21));
+            add(new Person("王五", d3, 21));
+        }};
+        System.out.println(people1);
+        HashSet<Person> people = new HashSet<>(people1);
+        System.out.println(people);
     }
 
     @Test
-    public void t21() {
-
+    public void t21() throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date d1 = dateFormat.parse("2000-12-1");
+        Person zhangThree = new Person("张三", d1, 23);
+        Person liFour = new Person("张三", d1, 23);
+        List<Person> people = Arrays.asList(zhangThree, liFour);
     }
 
     @Test
     public void t22() {
-
+        int[] intArray = {1, 2, 3};
+        List<Integer> collect = Arrays.stream(intArray).boxed().collect(Collectors.toList());
+        collect.add(4);
+        System.out.println(collect);
+        System.out.println(Arrays.toString(intArray));
     }
 
     @Test
     public void t23() {
+        System.out.println(StringUtils.isNotBlank(" "));
+        System.out.println(StringUtils.isNotEmpty(" "));
+        System.out.println(StringUtils.isNotBlank(""));
+        System.out.println(StringUtils.isNotEmpty(""));
+    }
+
+    @Test
+    public void t24() {
+        int[] nums = new int[]{1, 2, 3};
+        List<List<Integer>> res = new ArrayList<>();
+        res.add(new ArrayList<>());
+        for (Integer n : nums) {
+            int size = res.size();
+            for (int i = 0; i < size; i++) {
+                List<Integer> newSub = new ArrayList<>(res.get(i));
+                newSub.add(n);
+                res.add(newSub);
+            }
+        }
+        System.out.println(res + "\n" + res.size());
+    }
+
+    @Test
+    public void t25() {
 
     }
 
