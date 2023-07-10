@@ -121,8 +121,8 @@ class ApplicationStartUpTest {
             try {
                 // 同步到议价
                 log.info("同步第{}条合作伙伴协议信息到议价平台, request: {}", count, JSON.toJSONString(protocolRequestDTO));
-//                ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(UAT_PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
-//                log.info("第{}条, response:{}", count, JSON.toJSONString(postForEntity.getBody()));
+                ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROD_PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
+                log.info("第{}条, response:{}", count, JSON.toJSONString(postForEntity.getBody()));
             } catch (Exception e) {
                 log.error("同步第{}合作伙伴协议信息到议价平台失败", count);
             }
