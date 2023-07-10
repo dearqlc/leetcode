@@ -16,6 +16,7 @@ import pers.qlc.leetcode.dto.AgreementDTO;
 import pers.qlc.leetcode.dto.request.PartnerProtocolRequestDTO;
 import pers.qlc.leetcode.dto.request.ProtocolRequestDataDTO;
 import pers.qlc.leetcode.dto.request.SignatureRequestDTO;
+import pers.qlc.leetcode.dto.response.PartnerAgrSyncResponseDTO;
 import pers.qlc.leetcode.dto.response.SignatureResponseDTO;
 import pers.qlc.leetcode.enums.PartnerChannelMappingEnum;
 import pers.qlc.leetcode.model.DeskModel;
@@ -41,10 +42,6 @@ class ApplicationStartUpTest {
     // 4s店集合
     public static final List<String> ARR_OF_4s = new ArrayList<>(Arrays.asList("A010102", "A010101"));
     /**
-     * Excel文件地址
-     */
-    private static final String PATH_NAME = "E:\\6.15定价决策刷数.xlsx";
-    /**
      * PROD签名地址
      */
     private static final String PROD_SIGNATURE_URL = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.SIGNATURE;
@@ -64,6 +61,10 @@ class ApplicationStartUpTest {
      * 获取restTemplate
      */
     private final RestTemplate restTemplate = new RestTemplate();
+    /**
+     * Excel文件地址
+     */
+    private static final String PATH_NAME = "E:\\xxx.xlsx";
     @Autowired
     private IDeskService deskService;
 
@@ -87,9 +88,9 @@ class ApplicationStartUpTest {
         for (AgreementDTO agreement : agreementList) {
             // 获取签名
             SignatureRequestDTO signatureRequestDTO = new SignatureRequestDTO(100);
-            ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(UAT_SIGNATURE_URL, signatureRequestDTO, SignatureResponseDTO.class);
+            ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(PROD_SIGNATURE_URL, signatureRequestDTO, SignatureResponseDTO.class);
             if (response.getBody() == null) {
-                log.info("获取第{}条签名失败, 协议为{}！", count, agreement);
+                log.info("获取第{}条签名失败, 协议号为{}！", count, agreement.getAgreementNo());
                 continue;
             }
 
