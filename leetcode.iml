@@ -138,5 +138,8 @@
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:2.2" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.30" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba.toolkit.common:toolkit-common-lang:1.1.5" level="project" />
+    <orderEntry type="library" name="Maven: com.aliyun.fsi.insurance:agreement-facade:1.1.2-RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6.0" level="project" />
   </component>
 </module>
