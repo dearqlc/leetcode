@@ -819,4 +819,16 @@ public class LeetCodeTest {
         AgreementDTO agreementDTO = JSONObject.parseObject(json, AgreementDTO.class);
         System.out.println(agreementDTO);
     }
+
+    @Test
+    public void t35() {
+        Person person = new Person();
+        person.setAge(1);
+        addCount(person);
+        System.out.println(person);
+    }
+
+    private void addCount(Person person) {
+        person.setAge(person.getAge() + 1);
+    }
 }

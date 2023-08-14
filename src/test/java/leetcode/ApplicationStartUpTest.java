@@ -175,6 +175,16 @@ class ApplicationStartUpTest {
     private final static String AGR_PROD_URL = "http://platform.cic.inter/api/4vw91mvuuudedjwe";
 
     /**
+     * 合作伙伴PT域名
+     */
+    private final static String ECOLOGY_PT_URL = "http://h6uwg7zeev6zqkxx.apigateway.ant-test.res.cloud.cic.inter";
+
+    /**
+     * 合约域PT域名
+     */
+    private final static String AGR_PT_URL = "http://yvcoowi3iblr72lh.apigateway.ant-test.res.cloud.cic.inter";
+
+    /**
      * 根据合约号和合约版本查询合约信息
      */
     private final static String GET_AGREEMENT_BY_NO_VERSION = "/platform/api/agr/agr/get-agreement-by-no-version";
@@ -198,7 +208,7 @@ class ApplicationStartUpTest {
 
     private final static String COOKIE_PROD = "undefined__tenant=AYEOSUMI; undefined__project=AYEOSUMI; undefined__workspace=prod; undefined__region=0000000001; 0000020314__tenant=AYEOSUMI; 0000020314__project=AYEOSUMI; 0000020314__workspace=prod; 0000020314__region=0000000001; ctoken=bigfish_ctoken_18i40igh85; csrfToken=Mv5l9z3vy1B7JA9lxF5zwNS8; cic-ctoken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcHBJZCIsImFwcElkIjoiZGIzZWIyNWQ4MWRmMDQ3YWZmNmZjM2JmZjAwZjUxM2FSazBlVTdOVUxtbSIsImFjY2Vzc1Rva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhkV1FpT2xzaVpXNTBaWEp3Y21selpWOXRiMkpwYkdWZmNtVnpiM1Z5WTJVaUxDSmlabVpmWVhCcFgzSmxjMjkxY21ObElsMHNJbVY0Y0NJNk1UWTVNakF4T1RVeE5Td2lkWE5sY2w5dVlXMWxJam9pTVRBeE1EQXdNVFV4TUNJc0ltcDBhU0k2SW1NMU5qVmtaV0UwTFRBM09XRXRORFF3TnkxaVpUSXhMV1JoWVdJMk4ySm1ZV1kzTVNJc0ltTnNhV1Z1ZEY5cFpDSTZJbVJpTTJWaU1qVmtPREZrWmpBME4yRm1aalptWXpOaVptWXdNR1kxTVROaFVtc3daVlUzVGxWTWJXMGlMQ0p6WTI5d1pTSTZXeUp5WldGa0lsMTkuTEhtSWNoQmdxWUdBV1Fpdy0wQ0JXb1FSMThtTnZzWXFiV1R3TXVCNnp0VSIsImV4cCI6MTY5MjAxOTUxNCwiaWF0IjoxNjkxOTc2MzE1LCJqdGkiOiIwMjVmZGI3Zi1mNmUwLTRmNzMtODIyZC1iM2VjM2VlNGRiNGIifQ.GpZ1yhYvZ0Ge9ZX-PS1Zk49fAk88Nq6UBLRWXdLXcv0";
 
-    private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\xxx.xlsx";
+    private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\代理合约814.xlsx";
 
     /**
      * 根据代理合约补充合作合约
@@ -206,37 +216,37 @@ class ApplicationStartUpTest {
     @Test
     public void agreementSync() {
         String str = "prod";
+
         String AGR_URL = null;
         String ECO_URL = null;
+        String COOKIE = null;
         if (str.equals("prod")) {
             AGR_URL = AGR_PROD_URL;
             ECO_URL = ECOLOGY_PROD_URL;
+            COOKIE = COOKIE_PROD;
         } else if (str.equals("pt")) {
-            AGR_URL = "http://yvcoowi3iblr72lh.apigateway.ant-test.res.cloud.cic.inter";
-            ECO_URL = "http://h6uwg7zeev6zqkxx.apigateway.ant-test.res.cloud.cic.inter";
+            AGR_URL = AGR_PT_URL;
+            ECO_URL = ECOLOGY_PT_URL;
+            COOKIE = COOKIE_PT;
         }
-        // 解析Excel
-        List<AgreementSyncExcelDTO> agreementList = ExcelUtils.readExcelWithCheck(
-                AgreementSyncExcelDTO.class,
-                new File(AGREEMENT_SYNC_PATH_NAME),
-                (t, value) -> ((AgreementSyncExcelDTO) t).setResult(value),
-                (t, value) -> ((AgreementSyncExcelDTO) t).setFailReason(value)
-        );
 
-        // 计数
+        // 解析Excel
+        List<AgreementSyncExcelDTO> agreementList = getAgreementSyncExcelDTOS();
+
         int count = 1;
+        int size = agreementList.size();
 
         // 遍历Excel数据
         for (AgreementSyncExcelDTO agreement : agreementList) {
-            AgreementQueryRequestDTO agreementQueryDTO = new AgreementQueryRequestDTO();
-            agreementQueryDTO.setAgreementNo(agreement.getAgreementNo());
-            agreementQueryDTO.setAgreementMajorVersionNo(getMajorVersion(agreement));
-            agreementQueryDTO.setAgreementMinorVersionNo("0");
+
+            // 获取合约号版本号
+            AgreementQueryRequestDTO agreementQueryDTO = getAgreementQueryRequestDTO(agreement);
 
             // 根据合约号版本号获取合约域信息
             ResponseEntity<AgreementQueryResponseDTO> agrEntity = restTemplate.postForEntity(AGR_URL + GET_AGREEMENT_BY_NO_VERSION, agreementQueryDTO, AgreementQueryResponseDTO.class);
+
             if (agrEntity.getBody().getData() == null) {
-                log.info("第{}条，根据合约号：{}，版本号：{}，查询合约域合约失败！", count, agreementQueryDTO.getAgreementNo(), agreementQueryDTO.getAgreementMajorVersionNo());
+                log.info("第{}/{}条，根据合约号：{}，版本号：{}，查询合约域合约失败！", count, size, agreementQueryDTO.getAgreementNo(), agreementQueryDTO.getAgreementMajorVersionNo());
                 count++;
                 continue;
             }
@@ -244,123 +254,204 @@ class ApplicationStartUpTest {
             // 获取到合约域合约
             AgreementDTO agreementDTO = agrEntity.getBody().getData();
 
-            log.info("第{}条，根据合约号：{}，版本号：{}，得到合约域合约：{}", count, agreementQueryDTO.getAgreementNo(), agreementQueryDTO.getAgreementMajorVersionNo(), JSON.toJSONString(agreementDTO));
+            log.info("第{}/{}条，根据合约号：{}，版本号：{}，得到合约域合约：{}", count, size, agreementQueryDTO.getAgreementNo(), agreementQueryDTO.getAgreementMajorVersionNo(), JSON.toJSONString(agreementDTO));
 
             // 获取甲乙方
             AgreementParticipantDTO participant = getAgreementParticipant(agreementDTO);
 
             if (participant == null) {
-                log.info("第{}条，获取甲乙方失败！", count);
+                log.info("第{}/{}条，获取甲乙方失败！", count, size);
                 count++;
                 continue;
             }
 
-            // PageDTO
-            ApprovalDocOdPageDTO approvalDocOdPageDTO = new ApprovalDocOdPageDTO();
-            approvalDocOdPageDTO.setApprovalDocType("agr_strategy_add");
-            approvalDocOdPageDTO.setBusinessUnitId(agreement.getBusinessId());
-            approvalDocOdPageDTO.setBuType(agreement.getBusinessTypeCode());
-            approvalDocOdPageDTO.setApprovalSource(agreement.getBusinessTypeCode());
+            // 创建PagrDTO
+            ApprovalDocOdPageDTO approvalDocOdPageDTO = getApprovalDocOdPageDTO(ECO_URL, count, agreement, agreementDTO, participant);
 
-            // buDTO
-            ApprovalDocBuDTO approvalDocBuDTO = new ApprovalDocBuDTO();
-            approvalDocBuDTO.setRoleId(participant.getRoleId());
-            approvalDocBuDTO.setPartnerName(participant.getPartnerName());
-            approvalDocBuDTO.setIsRepair(false);
-            approvalDocOdPageDTO.setBuDTO(approvalDocBuDTO);
+            log.info("第{}/{}条，commitApproval入参：{}", count, size, JSON.toJSONString(approvalDocOdPageDTO));
 
-            // agrDTO
-            ApprovalDocAgrDTO approvalDocAgrDTO = new ApprovalDocAgrDTO();
-            approvalDocAgrDTO.setAgrSignComCode(participant.getOrgCode());
-            approvalDocAgrDTO.setAgrName(agreementDTO.getAgreementName());
-            approvalDocAgrDTO.setDateStart(Date.from(LocalDateTime.of(LocalDate.from(agreementDTO.getAgreementElement().getPeriod().getStartDt()), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toInstant()));
-            approvalDocAgrDTO.setDateEnd(Date.from(LocalDateTime.of(LocalDate.from(agreementDTO.getAgreementElement().getPeriod().getEndDt()), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toInstant()));
-            approvalDocAgrDTO.setAgrSignDate(Date.from(LocalDateTime.of(LocalDate.from(agreementDTO.getAgreementElement().getPeriod().getSignDt()), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toInstant()));
-            approvalDocAgrDTO.setAgrIsHead(agreementDTO.getIsGeneralAgreement());
-            approvalDocAgrDTO.setAuthorizeRanges(getAgreementAuthorizeRanges(agreementDTO));
-            approvalDocOdPageDTO.setAgrDTO(approvalDocAgrDTO);
-
-            // strategyDTO
-            ApprovalDocStrategyDTO approvalDocStrategyDTO = new ApprovalDocStrategyDTO();
-            // 根据roleId查询代理挂靠
-            AffiliatedQueryRequestDTO affiliatedQueryRequestDTO = new AffiliatedQueryRequestDTO();
-            affiliatedQueryRequestDTO.setRoleId(agreement.getRoleId());
-            ResponseEntity<AffiliatedQueryResposeDTO> affiliatedEntity = restTemplate.postForEntity(ECO_URL + AFFILIATED_QUERY, affiliatedQueryRequestDTO, AffiliatedQueryResposeDTO.class);
-            if (CollectionUtils.isNotEmpty(affiliatedEntity.getBody().getData())) {
-                List<AffiliatedDTO> affiliatedDTOS = affiliatedEntity.getBody().getData();
-                List<ApprovalDocAgencyDTO> agencyDTOS = new ArrayList<>();
-                if (CollectionUtils.isNotEmpty(affiliatedDTOS)) {
-                    List<AffiliatedDTO> affiliatedDTOList = affiliatedDTOS.stream().filter(affiliatedDTO -> affiliatedDTO.getRoleId().equals(affiliatedDTO.getRoleIdDepend())).collect(Collectors.toList());
-                    affiliatedDTOList.forEach(affiliatedDTO -> {
-                        ApprovalDocAgencyDTO agencyDTO = new ApprovalDocAgencyDTO();
-                        agencyDTO.setAgencyName(affiliatedDTO.getPartnerNameDepend());
-                        agencyDTO.setAgencyPartnerAgrNo(affiliatedDTO.getAgreementNoDepend());
-                        agencyDTO.setDependDateStart(affiliatedDTO.getDependDateStart());
-                        agencyDTO.setDependDateEnd(affiliatedDTO.getDependDateEnd());
-                        agencyDTO.setInsuranceProductCode(affiliatedDTO.getInsuranceProductCode());
-                        agencyDTO.setInsuranceProductName(affiliatedDTO.getInsuranceProductName());
-                        agencyDTO.setIsDefaultStr(false);
-                        agencyDTOS.add(agencyDTO);
-                    });
-                }
-                if (CollectionUtils.isNotEmpty(agencyDTOS)) {
-                    approvalDocStrategyDTO.setPartnerAgency(agencyDTOS);
-                } else {
-                    log.info("第{}条，未查询到挂靠到自己的机构！", count);
-                }
-            } else {
-                log.info("第{}条，未查询到代理挂靠！", count);
-            }
-            approvalDocOdPageDTO.setStrategyDTO(approvalDocStrategyDTO);
-
-            log.info("第{}条，commitApproval入参：{}", count, JSON.toJSONString(approvalDocOdPageDTO));
+            // 组装CommitApproval接口入参
+            HttpEntity<String> pageHttpEntity = getCommitApprovalHttpEntity(COOKIE, approvalDocOdPageDTO);
 
             // 调用commitApproval接口
-            // 将pageDTO转成json字符串
-            String pageContent = JSON.toJSONString(approvalDocOdPageDTO);
-            // 添加Cookie
-            HttpHeaders pageHttpHeaders = new HttpHeaders();
-            MediaType type = MediaType.parseMediaType("application/json");
-            pageHttpHeaders.setContentType(type);
-            pageHttpHeaders.add("Accept", MediaType.ALL_VALUE);
-            pageHttpHeaders.add("Cookie", COOKIE_PROD);
-            // 组装请求体
-            HttpEntity<String> pageHttpEntity = new HttpEntity<>(pageContent, pageHttpHeaders);
-
             ResponseEntity<CommitApprovalResponseDTO> commitApprovalEntity = restTemplate.exchange(ECO_URL + COMMIT_APPROVAL, HttpMethod.POST, pageHttpEntity, CommitApprovalResponseDTO.class);
+
             if (commitApprovalEntity.getBody().getData() == null) {
-                log.info("第{}条，提交审批失败！", count);
+                log.info("第{}/{}条，提交审批失败！", count, size);
                 count++;
                 continue;
             }
 
-            // 得到approvalDocCode
+            // 得到审批单号approvalDocCode
             String approvalDocCode = commitApprovalEntity.getBody().getData();
+            log.info("第{}/{}条，审批单号为{}！", count, size, approvalDocCode);
 
-            log.info("第{}条，审批单号为{}！", count, approvalDocCode);
+            // 创建ApprovalResultDTO
+            ApprovalResultRequestDTO approvalResultRequestDTO = getApprovalResultRequestDTO(approvalDocCode);
+
+            // 组装ApprovalResult接口入参
+            HttpEntity<String> approvalHttpEntity = getApprovalResultHttpEntity(COOKIE, approvalResultRequestDTO);
 
             // 调用approvalResult接口
-            ApprovalResultRequestDTO approvalResultRequestDTO = new ApprovalResultRequestDTO();
-            approvalResultRequestDTO.setApprovalDocCode(approvalDocCode);
-            approvalResultRequestDTO.setApprovalRemark("1");
-            approvalResultRequestDTO.setApprovalResult(true);
-
-            // 设置body参数，并转成json字符串
-            String approvalCotent = JSON.toJSONString(approvalResultRequestDTO);
-            HttpHeaders approvalHttpHeaders = new HttpHeaders();
-            approvalHttpHeaders.setContentType(type);
-            approvalHttpHeaders.add("Accept", MediaType.ALL_VALUE);
-            approvalHttpHeaders.add("Cookie", COOKIE_PROD);
-            // 组装请求体
-            HttpEntity<String> approvalHttpEntity = new HttpEntity<>(approvalCotent, approvalHttpHeaders);
             ResponseEntity<ApprovalResultResponseDTO> approvalResultEntity = restTemplate.exchange(ECO_URL + APPROVAL_RESULT, HttpMethod.POST, approvalHttpEntity, ApprovalResultResponseDTO.class);
+
             if (approvalResultEntity.getBody().getData() != null && approvalResultEntity.getBody().getData().equals("success")) {
-                log.info("同步第{}条成功", count);
+                log.info("同步第{}/{}条成功", count, size);
             } else {
-                log.info("同步第{}条失败", count);
+                log.info("同步第{}/{}条失败", count, size);
             }
+
             count++;
+
         }
+    }
+
+    /**
+     * 创建pageDTO
+     * @param ECO_URL
+     * @param count
+     * @param agreement
+     * @param agreementDTO
+     * @param participant
+     * @return
+     */
+    private ApprovalDocOdPageDTO getApprovalDocOdPageDTO(String ECO_URL, int count, AgreementSyncExcelDTO agreement, AgreementDTO agreementDTO, AgreementParticipantDTO participant) {
+        ApprovalDocOdPageDTO approvalDocOdPageDTO = getApprovalDocOdPageDTO(agreement);
+        // buDTO
+        setBuDTO(participant, approvalDocOdPageDTO);
+        // agrDTO
+        setAgrDTO(agreementDTO, participant, approvalDocOdPageDTO);
+        // strategyDTO
+        setStrategyDTO(ECO_URL, count, agreement, approvalDocOdPageDTO);
+        return approvalDocOdPageDTO;
+    }
+
+    /**
+     * 创建ApprovalResultRequestDTO
+     * @param approvalDocCode
+     * @return
+     */
+    private ApprovalResultRequestDTO getApprovalResultRequestDTO(String approvalDocCode) {
+        ApprovalResultRequestDTO approvalResultRequestDTO = new ApprovalResultRequestDTO();
+        approvalResultRequestDTO.setApprovalDocCode(approvalDocCode);
+        approvalResultRequestDTO.setApprovalRemark("1");
+        approvalResultRequestDTO.setApprovalResult(true);
+        return approvalResultRequestDTO;
+    }
+
+    /**
+     * 组装ApprovalResult接口入参
+     * @param COOKIE
+     * @param approvalResultRequestDTO
+     * @return
+     */
+    private HttpEntity<String> getApprovalResultHttpEntity(String COOKIE, ApprovalResultRequestDTO approvalResultRequestDTO) {
+        String approvalCotent = JSON.toJSONString(approvalResultRequestDTO);
+        HttpHeaders approvalHttpHeaders = new HttpHeaders();
+        approvalHttpHeaders.setContentType(MediaType.parseMediaType("application/json"));
+        approvalHttpHeaders.add("Accept", MediaType.ALL_VALUE);
+        approvalHttpHeaders.add("Cookie", COOKIE);
+        return new HttpEntity<>(approvalCotent, approvalHttpHeaders);
+    }
+
+    /**
+     * 组装CoomitApproval接口入参
+     * @param COOKIE
+     * @param approvalDocOdPageDTO
+     * @return
+     */
+    private HttpEntity<String> getCommitApprovalHttpEntity(String COOKIE, ApprovalDocOdPageDTO approvalDocOdPageDTO) {
+        String pageContent = JSON.toJSONString(approvalDocOdPageDTO);
+        HttpHeaders pageHttpHeaders = new HttpHeaders();
+        pageHttpHeaders.setContentType(MediaType.parseMediaType("application/json"));
+        pageHttpHeaders.add("Accept", MediaType.ALL_VALUE);
+        pageHttpHeaders.add("Cookie", COOKIE);
+        return new HttpEntity<>(pageContent, pageHttpHeaders);
+    }
+
+    /**
+     * 获取合约号版本号
+     * @param agreement
+     * @return
+     */
+    private AgreementQueryRequestDTO getAgreementQueryRequestDTO(AgreementSyncExcelDTO agreement) {
+        AgreementQueryRequestDTO agreementQueryDTO = new AgreementQueryRequestDTO();
+        agreementQueryDTO.setAgreementNo(agreement.getAgreementNo());
+        agreementQueryDTO.setAgreementMajorVersionNo(getMajorVersion(agreement));
+        agreementQueryDTO.setAgreementMinorVersionNo("0");
+        return agreementQueryDTO;
+    }
+
+    private List<AgreementSyncExcelDTO> getAgreementSyncExcelDTOS() {
+        return ExcelUtils.readExcelWithCheck(
+                AgreementSyncExcelDTO.class,
+                new File(AGREEMENT_SYNC_PATH_NAME),
+                (t, value) -> ((AgreementSyncExcelDTO) t).setResult(value),
+                (t, value) -> ((AgreementSyncExcelDTO) t).setFailReason(value)
+        );
+    }
+
+    private void setStrategyDTO(String ECO_URL, int count, AgreementSyncExcelDTO agreement, ApprovalDocOdPageDTO approvalDocOdPageDTO) {
+        ApprovalDocStrategyDTO approvalDocStrategyDTO = new ApprovalDocStrategyDTO();
+        // 根据roleId查询代理挂靠
+        AffiliatedQueryRequestDTO affiliatedQueryRequestDTO = new AffiliatedQueryRequestDTO();
+        affiliatedQueryRequestDTO.setRoleId(agreement.getRoleId());
+        ResponseEntity<AffiliatedQueryResposeDTO> affiliatedEntity = restTemplate.postForEntity(ECO_URL + AFFILIATED_QUERY, affiliatedQueryRequestDTO, AffiliatedQueryResposeDTO.class);
+        if (CollectionUtils.isNotEmpty(affiliatedEntity.getBody().getData())) {
+            List<AffiliatedDTO> affiliatedDTOS = affiliatedEntity.getBody().getData();
+            List<ApprovalDocAgencyDTO> agencyDTOS = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(affiliatedDTOS)) {
+                List<AffiliatedDTO> affiliatedDTOList = affiliatedDTOS.stream().filter(affiliatedDTO -> affiliatedDTO.getRoleId().equals(affiliatedDTO.getRoleIdDepend())).collect(Collectors.toList());
+                affiliatedDTOList.forEach(affiliatedDTO -> {
+                    ApprovalDocAgencyDTO agencyDTO = new ApprovalDocAgencyDTO();
+                    agencyDTO.setAgencyName(affiliatedDTO.getPartnerNameDepend());
+                    agencyDTO.setAgencyPartnerAgrNo(affiliatedDTO.getAgreementNoDepend());
+                    agencyDTO.setDependDateStart(affiliatedDTO.getDependDateStart());
+                    agencyDTO.setDependDateEnd(affiliatedDTO.getDependDateEnd());
+                    agencyDTO.setInsuranceProductCode(affiliatedDTO.getInsuranceProductCode());
+                    agencyDTO.setInsuranceProductName(affiliatedDTO.getInsuranceProductName());
+                    agencyDTO.setIsDefaultStr(false);
+                    agencyDTOS.add(agencyDTO);
+                });
+            }
+            if (CollectionUtils.isNotEmpty(agencyDTOS)) {
+                approvalDocStrategyDTO.setPartnerAgency(agencyDTOS);
+            } else {
+                log.info("第{}条，未查询到挂靠到自己的机构！", count);
+            }
+        } else {
+            log.info("第{}条，未查询到代理挂靠！", count);
+        }
+        approvalDocOdPageDTO.setStrategyDTO(approvalDocStrategyDTO);
+    }
+
+    private void setAgrDTO(AgreementDTO agreementDTO, AgreementParticipantDTO participant, ApprovalDocOdPageDTO approvalDocOdPageDTO) {
+        ApprovalDocAgrDTO approvalDocAgrDTO = new ApprovalDocAgrDTO();
+        approvalDocAgrDTO.setAgrSignComCode(participant.getOrgCode());
+        approvalDocAgrDTO.setAgrName(agreementDTO.getAgreementName());
+        approvalDocAgrDTO.setDateStart(Date.from(LocalDateTime.of(LocalDate.from(agreementDTO.getAgreementElement().getPeriod().getStartDt()), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toInstant()));
+        approvalDocAgrDTO.setDateEnd(Date.from(LocalDateTime.of(LocalDate.from(agreementDTO.getAgreementElement().getPeriod().getEndDt()), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toInstant()));
+        approvalDocAgrDTO.setAgrSignDate(Date.from(LocalDateTime.of(LocalDate.from(agreementDTO.getAgreementElement().getPeriod().getSignDt()), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toInstant()));
+        approvalDocAgrDTO.setAgrIsHead(agreementDTO.getIsGeneralAgreement());
+        approvalDocAgrDTO.setAuthorizeRanges(getAgreementAuthorizeRanges(agreementDTO));
+        approvalDocOdPageDTO.setAgrDTO(approvalDocAgrDTO);
+    }
+
+    private void setBuDTO(AgreementParticipantDTO participant, ApprovalDocOdPageDTO approvalDocOdPageDTO) {
+        ApprovalDocBuDTO approvalDocBuDTO = new ApprovalDocBuDTO();
+        approvalDocBuDTO.setRoleId(participant.getRoleId());
+        approvalDocBuDTO.setPartnerName(participant.getPartnerName());
+        approvalDocBuDTO.setIsRepair(false);
+        approvalDocOdPageDTO.setBuDTO(approvalDocBuDTO);
+    }
+
+    private ApprovalDocOdPageDTO getApprovalDocOdPageDTO(AgreementSyncExcelDTO agreement) {
+        ApprovalDocOdPageDTO approvalDocOdPageDTO = new ApprovalDocOdPageDTO();
+        approvalDocOdPageDTO.setApprovalDocType("agr_strategy_add");
+        approvalDocOdPageDTO.setBusinessUnitId(agreement.getBusinessId());
+        approvalDocOdPageDTO.setBuType(agreement.getBusinessTypeCode());
+        approvalDocOdPageDTO.setApprovalSource(agreement.getBusinessTypeCode());
+        return approvalDocOdPageDTO;
     }
 
     private String getMajorVersion(AgreementSyncExcelDTO agreement) {
@@ -376,6 +467,11 @@ class ApplicationStartUpTest {
         return majorVersion;
     }
 
+    /**
+     * 获取甲乙方
+     * @param agreementDTO
+     * @return
+     */
     private AgreementParticipantDTO getAgreementParticipant(AgreementDTO agreementDTO) {
         AgreementParticipantDTO dto = new AgreementParticipantDTO();
         List<ParticipantDTO> participants = agreementDTO.getParticipants();
@@ -411,6 +507,6 @@ class ApplicationStartUpTest {
             return approvalDocOrgDTOS;
         }
         return null;
-
     }
+
 }
