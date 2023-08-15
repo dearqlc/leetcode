@@ -93,64 +93,64 @@ class ApplicationStartUpTest {
 
         // 计数
         int count = 1;
+        int size = agreementList.size();
+        SignatureRequestDTO signatureRequestDTO = new SignatureRequestDTO(100);
 
         // 遍历Excel数据
         for (AgreementExcel agreement : agreementList) {
 
-//            // 每一百条延时1分钟
-//            if (count % 100 == 0) {
-//                try {
-//                    log.info("第{}条签名, 延时一分钟-------------------------------------------", count);
-//                    TimeUnit.MINUTES.sleep(1);
-//                    log.info("延时结束-------------------------------------------------------");
-//                } catch (InterruptedException ie) {
-//                    Thread.currentThread().interrupt();
-//                }
-//            }
-
             // 获取签名
-            SignatureRequestDTO signatureRequestDTO = new SignatureRequestDTO(100);
             ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(UAT_SIGNATURE_URL, signatureRequestDTO, SignatureResponseDTO.class);
+
             if (response.getBody() == null) {
-                log.info("获取第{}条签名失败, 协议号为{}！", count, agreement.getAgreementNo());
+                log.info("获取第{}/{}条签名失败, 协议号为{}！", count, size, agreement.getAgreementNo());
                 continue;
             }
 
             // 填充签名数据
-            PartnerProtocolRequestDTO protocolRequestDTO = new PartnerProtocolRequestDTO();
-            protocolRequestDTO.setHost(response.getBody().getData().getHost());
-            protocolRequestDTO.setPolicy(response.getBody().getData().getPolicy());
-            protocolRequestDTO.setAccessKey(response.getBody().getData().getAccessKey());
-            protocolRequestDTO.setSignature(response.getBody().getData().getSignature());
-            protocolRequestDTO.setExpiretime(response.getBody().getData().getExpiretime());
+            PartnerProtocolRequestDTO protocolRequestDTO = getPartnerProtocolRequestDTO(response);
 
             // 填充合约数据
-            ProtocolRequestDataDTO data = new ProtocolRequestDataDTO();
-            data.setCarCount(1);
-            data.setOrgcd(agreement.getOrgCode());
-            data.setPartnerCode(agreement.getRoleId());
-            data.setPartnerName(agreement.getPartnerName());
-            data.setAgentProtocolCode(agreement.getAgreementNo());
-            data.setEndDate(agreement.getDateEnd().substring(0, 10));
-            data.setStartDate(agreement.getDateStart().substring(0, 10));
-            data.setPartnerVersionNo("0");
-            data.setIsPriceFee("2");
-            String partnerLv4TypeCode = agreement.getRoleId().substring(0, 7);
-            data.setOrgChannel(PartnerChannelMappingEnum.getChannelByLevel4(partnerLv4TypeCode));
-            data.setPartnerSystemType(ARR_OF_4s.contains(partnerLv4TypeCode) ? YES_4S : NO_4S);
-            protocolRequestDTO.setData(data);
+            setAgreement(agreement, protocolRequestDTO);
 
             try {
                 // 同步到议价
-                log.info("同步第{}条合作伙伴协议信息到议价平台, request: {}", count, JSON.toJSONString(protocolRequestDTO));
+                log.info("同步第{}/{}条合作伙伴协议信息到议价平台, request: {}", count, size, JSON.toJSONString(protocolRequestDTO));
                 ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(UAT_PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
-                log.info("第{}条{}, response:{}", count, protocolRequestDTO.getData().getAgentProtocolCode(), JSON.toJSONString(postForEntity.getBody()));
+                log.info("第{}/{}条{}, response:{}", count, size, protocolRequestDTO.getData().getAgentProtocolCode(), JSON.toJSONString(postForEntity.getBody()));
             } catch (Exception e) {
-                log.error("同步第{}合作伙伴协议信息到议价平台失败", count);
+                log.error("同步第{}/{}条合作伙伴协议信息到议价平台失败", count, size);
             }
 
             count++;
         }
+    }
+
+    private void setAgreement(AgreementExcel agreement, PartnerProtocolRequestDTO protocolRequestDTO) {
+        ProtocolRequestDataDTO data = new ProtocolRequestDataDTO();
+        data.setCarCount(1);
+        data.setOrgcd(agreement.getOrgCode());
+        data.setPartnerCode(agreement.getRoleId());
+        data.setPartnerName(agreement.getPartnerName());
+        data.setAgentProtocolCode(agreement.getAgreementNo());
+        data.setEndDate(agreement.getDateEnd().substring(0, 10));
+        data.setStartDate(agreement.getDateStart().substring(0, 10));
+        data.setPartnerVersionNo("0");
+        data.setIsPriceFee("2");
+        String partnerLv4TypeCode = agreement.getRoleId().substring(0, 7);
+        data.setOrgChannel(PartnerChannelMappingEnum.getChannelByLevel4(partnerLv4TypeCode));
+        data.setPartnerSystemType(ARR_OF_4s.contains(partnerLv4TypeCode) ? YES_4S : NO_4S);
+        protocolRequestDTO.setData(data);
+    }
+
+    private PartnerProtocolRequestDTO getPartnerProtocolRequestDTO(ResponseEntity<SignatureResponseDTO> response) {
+        PartnerProtocolRequestDTO protocolRequestDTO = new PartnerProtocolRequestDTO();
+        protocolRequestDTO.setHost(response.getBody().getData().getHost());
+        protocolRequestDTO.setPolicy(response.getBody().getData().getPolicy());
+        protocolRequestDTO.setAccessKey(response.getBody().getData().getAccessKey());
+        protocolRequestDTO.setSignature(response.getBody().getData().getSignature());
+        protocolRequestDTO.setExpiretime(response.getBody().getData().getExpiretime());
+        return protocolRequestDTO;
     }
 
     /**
@@ -230,13 +230,13 @@ class ApplicationStartUpTest {
             COOKIE = COOKIE_PT;
         }
 
-        // 解析Excel
+        // 解析excel
         List<AgreementSyncExcelDTO> agreementList = getAgreementSyncExcelDTOS();
 
         int count = 1;
         int size = agreementList.size();
 
-        // 遍历Excel数据
+        // 遍历excel数据
         for (AgreementSyncExcelDTO agreement : agreementList) {
 
             // 获取合约号版本号
@@ -265,12 +265,12 @@ class ApplicationStartUpTest {
                 continue;
             }
 
-            // 创建PagrDTO
+            // 创建pageDTO
             ApprovalDocOdPageDTO approvalDocOdPageDTO = getApprovalDocOdPageDTO(ECO_URL, count, agreement, agreementDTO, participant);
 
             log.info("第{}/{}条，commitApproval入参：{}", count, size, JSON.toJSONString(approvalDocOdPageDTO));
 
-            // 组装CommitApproval接口入参
+            // 组装commitApproval接口入参
             HttpEntity<String> pageHttpEntity = getCommitApprovalHttpEntity(COOKIE, approvalDocOdPageDTO);
 
             // 调用commitApproval接口
@@ -286,10 +286,10 @@ class ApplicationStartUpTest {
             String approvalDocCode = commitApprovalEntity.getBody().getData();
             log.info("第{}/{}条，审批单号为{}！", count, size, approvalDocCode);
 
-            // 创建ApprovalResultDTO
+            // 创建approvalResultDTO
             ApprovalResultRequestDTO approvalResultRequestDTO = getApprovalResultRequestDTO(approvalDocCode);
 
-            // 组装ApprovalResult接口入参
+            // 组装approvalResult接口入参
             HttpEntity<String> approvalHttpEntity = getApprovalResultHttpEntity(COOKIE, approvalResultRequestDTO);
 
             // 调用approvalResult接口
