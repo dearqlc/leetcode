@@ -172,40 +172,33 @@ public enum PartnerTypeEnum {
     C030107("汽车检测站", "C030107", PartnerTypeEnum.C0301),
     C030108("救援服务", "C030108", PartnerTypeEnum.C0301),
 
-    D01("再保险公司", "D01", PartnerTypeEnum.D),
-    D02("再保险经纪公司", "D02", PartnerTypeEnum.D),
-    D03("保险公司", "D03", PartnerTypeEnum.D),
-    D04("自保公司", "D04", PartnerTypeEnum.D),
-    D05("共保体", "D05", PartnerTypeEnum.D),
-    D06("保险互助组织", "D06", PartnerTypeEnum.D),
-    D07("劳合社", "D07", PartnerTypeEnum.D),
-    D08("辛迪加", "D08", PartnerTypeEnum.D),
+    D01("再保合作伙伴", "D01", PartnerTypeEnum.D),
+    D02("共保合作伙伴", "D02", PartnerTypeEnum.D),
 
-    D0101("总公司", "D0101", PartnerTypeEnum.D01),
-    D0102("各级分公司", "D0102", PartnerTypeEnum.D01),
-    D0201("总公司", "D0201", PartnerTypeEnum.D02),
-    D0202("各级分公司", "D0202", PartnerTypeEnum.D02),
-    D0301("总公司", "D0301", PartnerTypeEnum.D03),
-    D0302("各级分公司", "D0302", PartnerTypeEnum.D03),
-    D0401("总公司", "D0401", PartnerTypeEnum.D04),
-    D0402("各级分公司", "D0402", PartnerTypeEnum.D04),
-    D0500("共保体", "D0500", PartnerTypeEnum.D05),
-    D0600("保险互助组织", "D0600", PartnerTypeEnum.D06),
-    D0700("劳合社", "D0700", PartnerTypeEnum.D07),
-    D0800("辛迪加", "D0800", PartnerTypeEnum.D08),
+    D0101("再保险公司","D0101",PartnerTypeEnum.D01),
+    D0102("再保险经纪公司","D0102",PartnerTypeEnum.D01),
+    D0103("保险公司","D0103",PartnerTypeEnum.D01),
+    D0201("保险公司","D0201",PartnerTypeEnum.D02),
+    D0202("共保体","D0202",PartnerTypeEnum.D02),
 
-    D010100("总公司", "D010100", PartnerTypeEnum.D0101),
-    D010200("各级分公司", "D010200", PartnerTypeEnum.D0102),
-    D020100("总公司", "D020100", PartnerTypeEnum.D0201),
-    D020200("各级分公司", "D020200", PartnerTypeEnum.D0202),
-    D030100("总公司", "D030100", PartnerTypeEnum.D0301),
-    D030200("各级分公司", "D030200", PartnerTypeEnum.D0302),
-    D040100("总公司", "D040100", PartnerTypeEnum.D0401),
-    D040200("各级分公司", "D040200", PartnerTypeEnum.D0402),
-    D050000("共保体", "D050000", PartnerTypeEnum.D0500),
-    D060000("保险互助组织", "D060000", PartnerTypeEnum.D0600),
-    D070000("劳合社", "D070000", PartnerTypeEnum.D0700),
-    D080000("辛迪加", "D080000", PartnerTypeEnum.D0800);
+    D010101("总公司","D010100",PartnerTypeEnum.D0101),
+    D010102("各级分公司","D010100",PartnerTypeEnum.D0101),
+
+    D010201("总公司","D010201",PartnerTypeEnum.D0102),
+    D010202("各级分公司","D010202",PartnerTypeEnum.D0102),
+
+    D010301("总公司","D010301",PartnerTypeEnum.D0103),
+    D010302("各级分公司","D010302",PartnerTypeEnum.D0103),
+    D010303("各级中支公司","D010303",PartnerTypeEnum.D0103),
+    D010304("各级支公司","D010304",PartnerTypeEnum.D0103),
+
+    D020101("总公司","D020101",PartnerTypeEnum.D0201),
+    D020102("各级分公司","D020102",PartnerTypeEnum.D0201),
+    D020103("各级中支公司","D020103",PartnerTypeEnum.D0201),
+    D020104("各级支公司","D020104",PartnerTypeEnum.D0201),
+
+    D020201("共保体","D020201",PartnerTypeEnum.D0202),
+    ;
 
     private String name;
     private String code;

@@ -811,6 +811,7 @@ public class LeetCodeTest {
         String json = "{\"agreementElement\":{\"documents\":[{\"fileOssId\":\"230809163711424493219\",\"tags\":[]}],\"extendInfo\":{\"belongOrgName\":\"中华财险\",\"belongOrgCode\":\"210000000000\",\"projectName\":\"qwe\"},\"period\":{\"agreementModifiedDt\":\"2023-09-11T00:00:00\",\"contractYear\":2023,\"dateFormat\":\"yyyy-MM-dd\",\"endDt\":\"2023-09-28T23:59:59\",\"firstPartySignDt\":\"2023-08-18T00:00:00\",\"signDt\":\"2023-09-11T00:00:00\",\"startDt\":\"2023-09-11T00:00:00\"},\"strategy\":[],\"terms\":[]},\"agreementMajorVersionNo\":3,\"agreementMinorVersionNo\":0,\"agreementName\":\"共保同步测试\",\"agreementNo\":\"H230809000000000000001047\",\"agreementStatusCd\":\"1\",\"agreementTypeCd\":\"17\",\"areas\":[],\"authorizationScope\":[],\"histories\":[{\"agreementMajorVersionNo\":1,\"agreementMinorVersionNo\":0,\"agreementNo\":\"H230809000000000000001047\",\"agreementStatusCd\":\"1\",\"auditBy\":\"agreement\",\"auditDt\":\"2023-08-09T16:37:21\",\"effectDt\":\"2023-09-11T00:00:00\",\"gmtModified\":\"2023-08-09T16:37:15\",\"id\":\"202308091010050001163700200000000012988\",\"modifier\":\"1010001393-童建飞\"},{\"agreementMajorVersionNo\":2,\"agreementMinorVersionNo\":0,\"agreementNo\":\"H230809000000000000001047\",\"agreementStatusCd\":\"1\",\"auditBy\":\"agreement\",\"auditDt\":\"2023-08-09T16:39:13\",\"effectDt\":\"2023-09-11T00:00:00\",\"gmtModified\":\"2023-08-09T16:39:08\",\"id\":\"202308091010050001163900200000000012989\",\"modifier\":\"1010001393-童建飞\"},{\"agreementMajorVersionNo\":3,\"agreementMinorVersionNo\":0,\"agreementNo\":\"H230809000000000000001047\",\"agreementStatusCd\":\"1\",\"auditBy\":\"agreement\",\"auditDt\":\"2023-08-09T16:43:08\",\"effectDt\":\"2023-09-11T00:00:00\",\"gmtModified\":\"2023-08-09T16:43:03\",\"id\":\"202308091010050001164300200000000012991\",\"modifier\":\"1010001393-童建飞\"}],\"isAgreement\":true,\"isGeneralAgreement\":false,\"isValid\":true,\"items\":[{\"agreementElement\":{\"documents\":[],\"extendInfo\":{},\"strategy\":[],\"terms\":[]},\"areas\":[],\"departments\":[],\"isFix\":false,\"itemSequenceNo\":1,\"products\":[{\"insuranceClassCode\":\"07\",\"insuranceClassName\":\"货物运输保险\",\"productCode\":\"D07001\",\"productName\":\"国内公路随车行李物品损失定额保险\"}],\"regions\":[],\"relationships\":[]}],\"jointInsuranceTypeCd\":\"coinsurance\",\"participants\":[{\"agreementElement\":{\"documents\":[],\"extendInfo\":{},\"strategy\":[],\"terms\":[]},\"belongOrg\":\"中华财产保险有限公司\",\"coinsurance\":{\"isIssuer\":true,\"isMajorInsurer\":true},\"isSingleRole\":false,\"orgCode\":\"211100000000\",\"participantName\":\"北京分公司\",\"participantNo\":1,\"participantTypeCd\":\"6\",\"relationships\":[]},{\"agent\":\"法人\",\"agreementElement\":{\"documents\":[],\"extendInfo\":{},\"strategy\":[],\"terms\":[]},\"belongOrg\":\"PT共保总公司\",\"coinsurance\":{\"isIssuer\":false,\"isMajorInsurer\":false},\"customerNo\":\"1088291148157432\",\"detailAddress\":\"地址\",\"isSingleRole\":false,\"orgCode\":\"D020102000000103\",\"participantName\":\"PT共保分公司\",\"participantNo\":1,\"participantTypeCd\":\"6\",\"relationships\":[]}],\"paymentSettlement\":{\"currencyCd\":\"CNY\",\"feeCalculateModeCd\":\"withoutTax\",\"settlementEnvironmentCd\":\"payAfterInvoice\",\"settlementPeriodCd\":\"week\"},\"relationships\":[],\"resolveTypeCd\":\"02\"}\n";
         AgreementResponseAppDTO agreementDTO = JSONObject.parseObject(json, AgreementResponseAppDTO.class);
         System.out.println((String) agreementDTO.getAgreementElement().getExtendInfo().get("belongOrgCode"));
+        System.out.println((String) agreementDTO.getAgreementElement().getExtendInfo().get("belongOrgName"));
     }
 
     @Test
@@ -822,13 +823,21 @@ public class LeetCodeTest {
 
     @Test
     public void t35() {
-        Person person = new Person();
-        person.setAge(1);
-        addCount(person);
-        System.out.println(person);
+        int hold = 0;
+        int change = 0;
+        for (int i = 0; i < 1000000; i++) {
+            if ((int) (Math.random() * 3) == (int) (Math.random() * 3)) {
+                hold++;
+            } else {
+                change++;
+            }
+        }
+        System.out.println("不换门的中奖率：" + (double) hold / 1000000 + "\n换过门的中奖率：" + (double) change / 1000000);
     }
 
-    private void addCount(Person person) {
-        person.setAge(person.getAge() + 1);
+    @Test
+    public void t36() {
+
     }
+
 }
