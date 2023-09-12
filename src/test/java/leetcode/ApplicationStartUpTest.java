@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import pers.qlc.leetcode.ApplicationStartUp;
 import pers.qlc.leetcode.dto.AgreementExcel;
 import pers.qlc.leetcode.dto.AgreementSyncExcelDTO;
+import pers.qlc.leetcode.dto.WJH;
 import pers.qlc.leetcode.dto.param.*;
 import pers.qlc.leetcode.dto.request.*;
 import pers.qlc.leetcode.dto.response.*;
@@ -25,7 +26,10 @@ import pers.qlc.leetcode.model.DeskModel;
 import pers.qlc.leetcode.service.IDeskService;
 import pers.qlc.leetcode.util.ExcelUtils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -300,7 +304,7 @@ class ApplicationStartUpTest {
      */
     @Test
     public void syncAgreement() {
-        String str = "uat";
+        String str = "xxx";
 
         String SIGNATURE_URL = null;
         String PROTOCOL_URL = null;
@@ -366,7 +370,7 @@ class ApplicationStartUpTest {
      */
     @Test
     public void agreementSync() {
-        String str = "prod";
+        String str = "xxx";
 
         String AGR_URL = null;
         String ECO_URL = null;
@@ -466,6 +470,56 @@ class ApplicationStartUpTest {
         deskQueryWrapper.eq(DeskModel::getDeskId, 1);
         List<DeskModel> list = deskService.list(deskQueryWrapper);
         System.out.println(list);
+    }
+
+    /**
+     * Excel文件地址
+     */
+    private static final String WJH_FILE_PATH = "E:\\WJH.csv";
+
+    @Test
+    public void WJH() {
+        List<WJH> wjhs = ExcelUtils.readExcelWithCheck(
+                WJH.class,
+                new File(WJH_FILE_PATH),
+                (t, value) -> ((WJH) t).setResult(value),
+                (t, value) -> ((WJH) t).setFailReason(value)
+        );
+        BufferedWriter bw;
+        List<WJH> tempList = new ArrayList<>();
+        String idExposure = wjhs.get(0).getIdExposure();
+        int i = 1;
+        for (WJH wjh : wjhs) {
+            if (idExposure.equals(wjh.getIdExposure())) {
+                tempList.add(wjh);
+            } else {
+                try {
+                    creatTxt(tempList, i);
+                    idExposure = wjh.getIdExposure();
+                    tempList = new ArrayList<>();
+                    tempList.add(wjh);
+                    i += 1;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            creatTxt(tempList, i);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void creatTxt(List<WJH> tempList, int i) throws IOException {
+        BufferedWriter bw;
+        bw = new BufferedWriter(new FileWriter("E:/WJH/" + i + ".txt"));
+        for (WJH wjh : tempList) {
+            bw.write(wjh.getSNP());
+            bw.newLine();
+            bw.flush();
+        }
+        bw.close();
     }
 
 }
