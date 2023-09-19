@@ -29,10 +29,4 @@ public class AgreementExcel {
     @ExcelProperty(value = "agreement_no")
     private String agreementNo;
 
-    @ExcelProperty(value = "导入结果")
-    private String result;
-
-    @ExcelProperty(value = "失败原因")
-    private String failReason;
-
 }

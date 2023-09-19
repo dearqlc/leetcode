@@ -175,29 +175,29 @@ public enum PartnerTypeEnum {
     D01("再保合作伙伴", "D01", PartnerTypeEnum.D),
     D02("共保合作伙伴", "D02", PartnerTypeEnum.D),
 
-    D0101("再保险公司","D0101",PartnerTypeEnum.D01),
-    D0102("再保险经纪公司","D0102",PartnerTypeEnum.D01),
-    D0103("保险公司","D0103",PartnerTypeEnum.D01),
-    D0201("保险公司","D0201",PartnerTypeEnum.D02),
-    D0202("共保体","D0202",PartnerTypeEnum.D02),
+    D0101("再保险公司", "D0101", PartnerTypeEnum.D01),
+    D0102("再保险经纪公司", "D0102", PartnerTypeEnum.D01),
+    D0103("保险公司", "D0103", PartnerTypeEnum.D01),
+    D0201("保险公司", "D0201", PartnerTypeEnum.D02),
+    D0202("共保体", "D0202", PartnerTypeEnum.D02),
 
-    D010101("总公司","D010100",PartnerTypeEnum.D0101),
-    D010102("各级分公司","D010100",PartnerTypeEnum.D0101),
+    D010101("总公司", "D010100", PartnerTypeEnum.D0101),
+    D010102("各级分公司", "D010100", PartnerTypeEnum.D0101),
 
-    D010201("总公司","D010201",PartnerTypeEnum.D0102),
-    D010202("各级分公司","D010202",PartnerTypeEnum.D0102),
+    D010201("总公司", "D010201", PartnerTypeEnum.D0102),
+    D010202("各级分公司", "D010202", PartnerTypeEnum.D0102),
 
-    D010301("总公司","D010301",PartnerTypeEnum.D0103),
-    D010302("各级分公司","D010302",PartnerTypeEnum.D0103),
-    D010303("各级中支公司","D010303",PartnerTypeEnum.D0103),
-    D010304("各级支公司","D010304",PartnerTypeEnum.D0103),
+    D010301("总公司", "D010301", PartnerTypeEnum.D0103),
+    D010302("各级分公司", "D010302", PartnerTypeEnum.D0103),
+    D010303("各级中支公司", "D010303", PartnerTypeEnum.D0103),
+    D010304("各级支公司", "D010304", PartnerTypeEnum.D0103),
 
-    D020101("总公司","D020101",PartnerTypeEnum.D0201),
-    D020102("各级分公司","D020102",PartnerTypeEnum.D0201),
-    D020103("各级中支公司","D020103",PartnerTypeEnum.D0201),
-    D020104("各级支公司","D020104",PartnerTypeEnum.D0201),
+    D020101("总公司", "D020101", PartnerTypeEnum.D0201),
+    D020102("各级分公司", "D020102", PartnerTypeEnum.D0201),
+    D020103("各级中支公司", "D020103", PartnerTypeEnum.D0201),
+    D020104("各级支公司", "D020104", PartnerTypeEnum.D0201),
 
-    D020201("共保体","D020201",PartnerTypeEnum.D0202),
+    D020201("共保体", "D020201", PartnerTypeEnum.D0202),
     ;
 
     private String name;

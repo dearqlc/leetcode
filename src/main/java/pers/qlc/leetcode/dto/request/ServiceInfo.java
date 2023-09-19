@@ -55,7 +55,7 @@ public class ServiceInfo {
     /**
      * 残值处理金额
      */
-    private BigDecimal  residualAmount;
+    private BigDecimal residualAmount;
     /**
      * 首付款时间
      */

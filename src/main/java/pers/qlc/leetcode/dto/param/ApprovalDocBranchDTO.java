@@ -47,17 +47,17 @@ public class ApprovalDocBranchDTO {
     private String orgPath;
 
     /**
-     *网点地址名称
+     * 网点地址名称
      */
     private String branchAddressName;
 
     /**
-     *网点地址经度
+     * 网点地址经度
      */
     private BigDecimal branchAddressLongitude;
 
     /**
-     *网点地址纬度
+     * 网点地址纬度
      */
     private BigDecimal branchAddressLatitude;
 

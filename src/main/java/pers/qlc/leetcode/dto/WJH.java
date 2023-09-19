@@ -12,10 +12,4 @@ public class WJH {
     @ExcelProperty(value = "SNP")
     private String SNP;
 
-    @ExcelProperty(value = "导入结果")
-    private String result;
-
-    @ExcelProperty(value = "失败原因")
-    private String failReason;
-
 }

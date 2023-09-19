@@ -11,5 +11,6 @@ public class Coinsurance {
     private String lv3;
     private String lv4;
 
-    Coinsurance() {}
+    Coinsurance() {
+    }
 }

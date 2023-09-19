@@ -23,7 +23,7 @@ public class ApprovalDocNonPriceDTO {
     /**
      * 车辆种类 (多选)
      */
-    private List<ApprovalDocLabelValueDTO>  vehicleTypes;
+    private List<ApprovalDocLabelValueDTO> vehicleTypes;
 
     /**
      * 细化车型 (多选)
@@ -90,7 +90,7 @@ public class ApprovalDocNonPriceDTO {
     /**
      * 车慧达大货车三者+车损评级
      */
-    private List<String>  truckModelVehicleLevel;
+    private List<String> truckModelVehicleLevel;
 
     /**
      * 车慧达大货车三者评级
@@ -147,42 +147,42 @@ public class ApprovalDocNonPriceDTO {
                 rangeEquals(purchasePriceRange, that.purchasePriceRange);
     }
 
-    private boolean stringEquals(String a, String b){
+    private boolean stringEquals(String a, String b) {
         // 只要有一个为空，该字段一定重复
-        if(StringUtils.isBlank(a) || StringUtils.isBlank(b)){
+        if (StringUtils.isBlank(a) || StringUtils.isBlank(b)) {
             return true;
         }
         return a.equals(b);
     }
 
-    private boolean listEquals(List a, List b){
+    private boolean listEquals(List a, List b) {
         // 只要有一个为空，该字段一定重复
-        if(CollectionUtils.isEmpty(a) || CollectionUtils.isEmpty(b)){
+        if (CollectionUtils.isEmpty(a) || CollectionUtils.isEmpty(b)) {
             return true;
         }
-        return a==b || (a.containsAll(b) && b.containsAll(a));
+        return a == b || (a.containsAll(b) && b.containsAll(a));
     }
 
     private boolean rangeEquals(ApprovalDocRangeNumberDTO a, ApprovalDocRangeNumberDTO b) {
         // 只要有一个为空，该字段一定重复
-        if(a==null||b==null) {
+        if (a == null || b == null) {
             return true;
         }
         // 只要有一个范围为空，该字段一定重复
-        if(StringUtils.isBlank(a.getFrom()) || StringUtils.isBlank(a.getTo())
+        if (StringUtils.isBlank(a.getFrom()) || StringUtils.isBlank(a.getTo())
                 || StringUtils.isBlank(b.getFrom()) || StringUtils.isBlank(b.getTo())) {
             return true;
         }
         if (a == b) return true;
 
         // 如果两边max、min分别包含的情况
-        if( (a.obtainsBooMin() && b.obtainsBooMax())){
-            return b.obtainsDoubleMin()<a.obtainsDoubleMax() && b.obtainsDoubleMax()>=a.obtainsDoubleMin();
-        }else if(a.obtainsBooMax() && b.obtainsBooMin()){
-            return b.obtainsDoubleMin()<=a.obtainsDoubleMax() && b.obtainsDoubleMax()>a.obtainsDoubleMin();
+        if ((a.obtainsBooMin() && b.obtainsBooMax())) {
+            return b.obtainsDoubleMin() < a.obtainsDoubleMax() && b.obtainsDoubleMax() >= a.obtainsDoubleMin();
+        } else if (a.obtainsBooMax() && b.obtainsBooMin()) {
+            return b.obtainsDoubleMin() <= a.obtainsDoubleMax() && b.obtainsDoubleMax() > a.obtainsDoubleMin();
         }
 
-        return b.obtainsDoubleMin()<a.obtainsDoubleMax() && b.obtainsDoubleMax()>a.obtainsDoubleMin();
+        return b.obtainsDoubleMin() < a.obtainsDoubleMax() && b.obtainsDoubleMax() > a.obtainsDoubleMin();
     }
 /*
 

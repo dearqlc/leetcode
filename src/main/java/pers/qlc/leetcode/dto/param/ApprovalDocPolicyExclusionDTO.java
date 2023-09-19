@@ -18,14 +18,14 @@ public class ApprovalDocPolicyExclusionDTO {
     private String roleTypeCode;
 
     /**
-     *  规则类型名称
+     * 规则类型名称
      */
     private String roleTypeName;
 
     /**
      * 规则名称
      */
-    private String  roleName;
+    private String roleName;
 
     /**
      * 审批权限

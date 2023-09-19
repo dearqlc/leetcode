@@ -25,19 +25,19 @@ public class ApprovalDocRangeNumberDTO {
      */
     private Boolean isMaxIncludes;
 
-    public double obtainsDoubleMin(){
-        return StringUtils.isBlank(from)?Double.MIN_VALUE:Double.parseDouble(from);
+    public double obtainsDoubleMin() {
+        return StringUtils.isBlank(from) ? Double.MIN_VALUE : Double.parseDouble(from);
     }
 
-    public double obtainsDoubleMax(){
-        return StringUtils.isBlank(to)?Double.MAX_VALUE:Double.parseDouble(to);
+    public double obtainsDoubleMax() {
+        return StringUtils.isBlank(to) ? Double.MAX_VALUE : Double.parseDouble(to);
     }
 
-    public boolean obtainsBooMin(){
+    public boolean obtainsBooMin() {
         return isMinIncludes;
     }
 
-    public boolean obtainsBooMax(){
+    public boolean obtainsBooMax() {
         return isMaxIncludes;
     }
 }

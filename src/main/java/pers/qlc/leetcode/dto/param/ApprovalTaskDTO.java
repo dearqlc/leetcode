@@ -36,7 +36,7 @@ public class ApprovalTaskDTO {
     /**
      * 申请人代码
      */
-    private String  approvalDocPersonCode;
+    private String approvalDocPersonCode;
     /**
      * 申请发起时间
      */

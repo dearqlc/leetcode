@@ -21,9 +21,4 @@ public class AgreementSyncExcelDTO {
     @ExcelProperty(value = "business_id")
     private String businessId;
 
-    @ExcelProperty(value = "导入结果")
-    private String result;
-
-    @ExcelProperty(value = "失败原因")
-    private String failReason;
 }

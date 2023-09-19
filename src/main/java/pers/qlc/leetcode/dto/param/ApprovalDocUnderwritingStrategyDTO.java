@@ -54,7 +54,7 @@ public class ApprovalDocUnderwritingStrategyDTO {
     private List<String> applicationNumber;
 
     /**
-     *  非价格方案列表
+     * 非价格方案列表
      */
     private List<ApprovalDocNonPriceDTO> nonPrivceList;
 

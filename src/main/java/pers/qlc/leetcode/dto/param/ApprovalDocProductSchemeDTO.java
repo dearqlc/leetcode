@@ -20,17 +20,17 @@ public class ApprovalDocProductSchemeDTO {
     /**
      * 商业险
      */
-        private ApprovalDocProductDTO commercialProductDTO;
+    private ApprovalDocProductDTO commercialProductDTO;
 
     /**
      * 交强险
      */
 
-        private ApprovalDocProductDTO ctpProductDTO;
+    private ApprovalDocProductDTO ctpProductDTO;
     /**
      * 意外险 集合
      */
-        private List<ApprovalDocProductDTO> accidentProducts;
+    private List<ApprovalDocProductDTO> accidentProducts;
     /**
      * 增值服务
      */

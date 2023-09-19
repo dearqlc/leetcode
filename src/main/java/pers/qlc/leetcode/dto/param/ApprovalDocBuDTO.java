@@ -77,22 +77,22 @@ public class ApprovalDocBuDTO {
     /**
      * 伙伴分类
      */
-    private String partnerLv1TypeCode; 
+    private String partnerLv1TypeCode;
 
     /**
      * 业务角色
      */
-    private String partnerLv2TypeCode; 
+    private String partnerLv2TypeCode;
 
     /**
      * 细分一级
      */
-    private String partnerLv3TypeCode; 
+    private String partnerLv3TypeCode;
 
     /**
      * 细分二级
      */
-    private String partnerLv4TypeCode; 
+    private String partnerLv4TypeCode;
 
     /**
      * 合作伙伴代码（车商）
@@ -200,11 +200,11 @@ public class ApprovalDocBuDTO {
     private List<ApprovalDocEmployeeDTO> partnerEmployee;
     /**
      * 合作伙伴业务人员
-     *  如：
+     * 如：
      * 调查人员
      * 律所人员信息（法务）
      */
-     private List<ApprovalDocEmployeeDTO> partnerStaff;
+    private List<ApprovalDocEmployeeDTO> partnerStaff;
 
     /**
      * 银行账户信息
@@ -262,7 +262,7 @@ public class ApprovalDocBuDTO {
     private String warehouseAddress;
 
     /**
-     *  覆盖机构范围
+     * 覆盖机构范围
      */
     private List<ApprovalDocAbilityDTO> abilityDTOList;
 

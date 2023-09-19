@@ -50,13 +50,23 @@ import static pers.qlc.leetcode.constant.UrlConstant.*;
 @SpringBootTest(classes = ApplicationStartUp.class)
 class ApplicationStartUpTest {
 
-    @Autowired
-    private IDeskService deskService;
-
+    /**
+     * Excel文件地址
+     */
+    private static final String PATH_NAME = "E:\\829定价推送.xlsx";
+    private final static String COOKIE_PT = "csrfToken=TAyH0UvTQ3DDcnQnOAFmk5Sq; cic-ctoken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcHBJZCIsImFwcElkIjoiNjg3NGFlYjM3N2Y5MGVlZGJiMzQyNWY2Yjc0Zjc0MWVzTFRrNldlRGpoeSIsImFjY2Vzc1Rva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhkV1FpT2xzaVpXNTBaWEp3Y21selpWOXRiMkpwYkdWZmNtVnpiM1Z5WTJVaUxDSmlabVpmWVhCcFgzSmxjMjkxY21ObElsMHNJbVY0Y0NJNk1UWTVNakF4T0RRek1Dd2lkWE5sY2w5dVlXMWxJam9pTVRBeE1EQXdNVE01TXlJc0ltcDBhU0k2SWpJelpXRm1OamRoTFRNMU1EUXROREUwWWkwNVptWXdMV0l3Tm1NeFpqTmxOekptT1NJc0ltTnNhV1Z1ZEY5cFpDSTZJalk0TnpSaFpXSXpOemRtT1RCbFpXUmlZak0wTWpWbU5tSTNOR1kzTkRGbGMweFVhelpYWlVScWFIa2lMQ0p6WTI5d1pTSTZXeUp5WldGa0lsMTkuaUZlNGc5SEt3bFJTUUxmQ29ZQmVOWkdKX05wMXBWd3pGaU5QdWg0MGtWTSIsImV4cCI6MTY5MjAxODQzMCwiaWF0IjoxNjkxOTc1MjMwLCJqdGkiOiIwNmZlYzk2Yy01MmRlLTQ0NGMtODU4MS00MzA2YzJmZWM2MDUifQ.GDqHMx2xcAYWDqpIr0Z5OuRB8UEIYIKX1x2CNfe9294";
+    private final static String COOKIE_PROD = "undefined__tenant=AYEOSUMI; undefined__project=AYEOSUMI; undefined__workspace=prod; undefined__region=0000000001; 0000020314__tenant=AYEOSUMI; 0000020314__project=AYEOSUMI; 0000020314__workspace=prod; 0000020314__region=0000000001; ctoken=bigfish_ctoken_18i40igh85; csrfToken=Mv5l9z3vy1B7JA9lxF5zwNS8; cic-ctoken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcHBJZCIsImFwcElkIjoiZGIzZWIyNWQ4MWRmMDQ3YWZmNmZjM2JmZjAwZjUxM2FSazBlVTdOVUxtbSIsImFjY2Vzc1Rva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhkV1FpT2xzaVpXNTBaWEp3Y21selpWOXRiMkpwYkdWZmNtVnpiM1Z5WTJVaUxDSmlabVpmWVhCcFgzSmxjMjkxY21ObElsMHNJbVY0Y0NJNk1UWTVNakF4T1RVeE5Td2lkWE5sY2w5dVlXMWxJam9pTVRBeE1EQXdNVFV4TUNJc0ltcDBhU0k2SW1NMU5qVmtaV0UwTFRBM09XRXRORFF3TnkxaVpUSXhMV1JoWVdJMk4ySm1ZV1kzTVNJc0ltTnNhV1Z1ZEY5cFpDSTZJbVJpTTJWaU1qVmtPREZrWmpBME4yRm1aalptWXpOaVptWXdNR1kxTVROaFVtc3daVlUzVGxWTWJXMGlMQ0p6WTI5d1pTSTZXeUp5WldGa0lsMTkuTEhtSWNoQmdxWUdBV1Fpdy0wQ0JXb1FSMThtTnZzWXFiV1R3TXVCNnp0VSIsImV4cCI6MTY5MjAxOTUxNCwiaWF0IjoxNjkxOTc2MzE1LCJqdGkiOiIwMjVmZGI3Zi1mNmUwLTRmNzMtODIyZC1iM2VjM2VlNGRiNGIifQ.GpZ1yhYvZ0Ge9ZX-PS1Zk49fAk88Nq6UBLRWXdLXcv0";
+    private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\代理合约814.xlsx";
+    /**
+     * Excel文件地址
+     */
+    private static final String WJH_FILE_PATH = "E:\\WJH.csv";
     /**
      * 获取restTemplate
      */
     private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private IDeskService deskService;
 
     private void setAgreement(AgreementExcel agreement, PartnerProtocolRequestDTO protocolRequestDTO) {
         ProtocolRequestDataDTO data = new ProtocolRequestDataDTO();
@@ -169,9 +179,7 @@ class ApplicationStartUpTest {
     private List<AgreementSyncExcelDTO> getAgreementSyncExcelDTOS() {
         return ExcelUtils.readExcelWithCheck(
                 AgreementSyncExcelDTO.class,
-                new File(AGREEMENT_SYNC_PATH_NAME),
-                (t, value) -> ((AgreementSyncExcelDTO) t).setResult(value),
-                (t, value) -> ((AgreementSyncExcelDTO) t).setFailReason(value)
+                new File(AGREEMENT_SYNC_PATH_NAME)
         );
     }
 
@@ -295,11 +303,6 @@ class ApplicationStartUpTest {
     }
 
     /**
-     * Excel文件地址
-     */
-    private static final String PATH_NAME = "E:\\829定价推送.xlsx";
-
-    /**
      * 批量同步协议到议价平台(使用前更新环境和文件地址)
      */
     @Test
@@ -319,9 +322,7 @@ class ApplicationStartUpTest {
         // 解析Excel
         List<AgreementExcel> agreementList = ExcelUtils.readExcelWithCheck(
                 AgreementExcel.class,
-                new File(PATH_NAME),
-                (t, value) -> ((AgreementExcel) t).setResult(value),
-                (t, value) -> ((AgreementExcel) t).setFailReason(value)
+                new File(PATH_NAME)
         );
 
         // 计数
@@ -358,12 +359,6 @@ class ApplicationStartUpTest {
             count++;
         }
     }
-
-    private final static String COOKIE_PT = "csrfToken=TAyH0UvTQ3DDcnQnOAFmk5Sq; cic-ctoken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcHBJZCIsImFwcElkIjoiNjg3NGFlYjM3N2Y5MGVlZGJiMzQyNWY2Yjc0Zjc0MWVzTFRrNldlRGpoeSIsImFjY2Vzc1Rva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhkV1FpT2xzaVpXNTBaWEp3Y21selpWOXRiMkpwYkdWZmNtVnpiM1Z5WTJVaUxDSmlabVpmWVhCcFgzSmxjMjkxY21ObElsMHNJbVY0Y0NJNk1UWTVNakF4T0RRek1Dd2lkWE5sY2w5dVlXMWxJam9pTVRBeE1EQXdNVE01TXlJc0ltcDBhU0k2SWpJelpXRm1OamRoTFRNMU1EUXROREUwWWkwNVptWXdMV0l3Tm1NeFpqTmxOekptT1NJc0ltTnNhV1Z1ZEY5cFpDSTZJalk0TnpSaFpXSXpOemRtT1RCbFpXUmlZak0wTWpWbU5tSTNOR1kzTkRGbGMweFVhelpYWlVScWFIa2lMQ0p6WTI5d1pTSTZXeUp5WldGa0lsMTkuaUZlNGc5SEt3bFJTUUxmQ29ZQmVOWkdKX05wMXBWd3pGaU5QdWg0MGtWTSIsImV4cCI6MTY5MjAxODQzMCwiaWF0IjoxNjkxOTc1MjMwLCJqdGkiOiIwNmZlYzk2Yy01MmRlLTQ0NGMtODU4MS00MzA2YzJmZWM2MDUifQ.GDqHMx2xcAYWDqpIr0Z5OuRB8UEIYIKX1x2CNfe9294";
-
-    private final static String COOKIE_PROD = "undefined__tenant=AYEOSUMI; undefined__project=AYEOSUMI; undefined__workspace=prod; undefined__region=0000000001; 0000020314__tenant=AYEOSUMI; 0000020314__project=AYEOSUMI; 0000020314__workspace=prod; 0000020314__region=0000000001; ctoken=bigfish_ctoken_18i40igh85; csrfToken=Mv5l9z3vy1B7JA9lxF5zwNS8; cic-ctoken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcHBJZCIsImFwcElkIjoiZGIzZWIyNWQ4MWRmMDQ3YWZmNmZjM2JmZjAwZjUxM2FSazBlVTdOVUxtbSIsImFjY2Vzc1Rva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhkV1FpT2xzaVpXNTBaWEp3Y21selpWOXRiMkpwYkdWZmNtVnpiM1Z5WTJVaUxDSmlabVpmWVhCcFgzSmxjMjkxY21ObElsMHNJbVY0Y0NJNk1UWTVNakF4T1RVeE5Td2lkWE5sY2w5dVlXMWxJam9pTVRBeE1EQXdNVFV4TUNJc0ltcDBhU0k2SW1NMU5qVmtaV0UwTFRBM09XRXRORFF3TnkxaVpUSXhMV1JoWVdJMk4ySm1ZV1kzTVNJc0ltTnNhV1Z1ZEY5cFpDSTZJbVJpTTJWaU1qVmtPREZrWmpBME4yRm1aalptWXpOaVptWXdNR1kxTVROaFVtc3daVlUzVGxWTWJXMGlMQ0p6WTI5d1pTSTZXeUp5WldGa0lsMTkuTEhtSWNoQmdxWUdBV1Fpdy0wQ0JXb1FSMThtTnZzWXFiV1R3TXVCNnp0VSIsImV4cCI6MTY5MjAxOTUxNCwiaWF0IjoxNjkxOTc2MzE1LCJqdGkiOiIwMjVmZGI3Zi1mNmUwLTRmNzMtODIyZC1iM2VjM2VlNGRiNGIifQ.GpZ1yhYvZ0Ge9ZX-PS1Zk49fAk88Nq6UBLRWXdLXcv0";
-
-    private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\代理合约814.xlsx";
 
     /**
      * 根据代理合约补充合作合约(使用之前确认环境，并更新COOKIE和文件地址)
@@ -472,18 +467,11 @@ class ApplicationStartUpTest {
         System.out.println(list);
     }
 
-    /**
-     * Excel文件地址
-     */
-    private static final String WJH_FILE_PATH = "E:\\WJH.csv";
-
     @Test
     public void WJH() {
         List<WJH> wjhs = ExcelUtils.readExcelWithCheck(
                 WJH.class,
-                new File(WJH_FILE_PATH),
-                (t, value) -> ((WJH) t).setResult(value),
-                (t, value) -> ((WJH) t).setFailReason(value)
+                new File(WJH_FILE_PATH)
         );
         BufferedWriter bw;
         List<WJH> tempList = new ArrayList<>();

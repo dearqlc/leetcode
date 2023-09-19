@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 public class ValidityPeriodResponseAppDTO {
     /**
-     *  签署时间（甲方线下签署时间）
+     * 签署时间（甲方线下签署时间）
      */
     private LocalDateTime firstPartySignDt;
     /**
