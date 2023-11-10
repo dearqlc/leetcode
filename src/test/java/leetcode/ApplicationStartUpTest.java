@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.aliyun.fsi.insurance.agreement.facade.dto.AgreementDTO;
 import com.aliyun.fsi.insurance.agreement.facade.dto.DepartmentDTO;
 import com.aliyun.fsi.insurance.agreement.facade.dto.ParticipantDTO;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Test;
@@ -17,19 +16,14 @@ import org.springframework.web.client.RestTemplate;
 import pers.qlc.leetcode.ApplicationStartUp;
 import pers.qlc.leetcode.dto.AgreementExcel;
 import pers.qlc.leetcode.dto.AgreementSyncExcelDTO;
-import pers.qlc.leetcode.dto.WJH;
 import pers.qlc.leetcode.dto.param.*;
 import pers.qlc.leetcode.dto.request.*;
 import pers.qlc.leetcode.dto.response.*;
 import pers.qlc.leetcode.enums.PartnerChannelMappingEnum;
-import pers.qlc.leetcode.model.DeskModel;
 import pers.qlc.leetcode.service.IDeskService;
 import pers.qlc.leetcode.util.ExcelUtils;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -53,20 +47,171 @@ class ApplicationStartUpTest {
     /**
      * Excel文件地址
      */
-    private static final String PATH_NAME = "E:\\829定价推送.xlsx";
-    private final static String COOKIE_PT = "csrfToken=TAyH0UvTQ3DDcnQnOAFmk5Sq; cic-ctoken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcHBJZCIsImFwcElkIjoiNjg3NGFlYjM3N2Y5MGVlZGJiMzQyNWY2Yjc0Zjc0MWVzTFRrNldlRGpoeSIsImFjY2Vzc1Rva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhkV1FpT2xzaVpXNTBaWEp3Y21selpWOXRiMkpwYkdWZmNtVnpiM1Z5WTJVaUxDSmlabVpmWVhCcFgzSmxjMjkxY21ObElsMHNJbVY0Y0NJNk1UWTVNakF4T0RRek1Dd2lkWE5sY2w5dVlXMWxJam9pTVRBeE1EQXdNVE01TXlJc0ltcDBhU0k2SWpJelpXRm1OamRoTFRNMU1EUXROREUwWWkwNVptWXdMV0l3Tm1NeFpqTmxOekptT1NJc0ltTnNhV1Z1ZEY5cFpDSTZJalk0TnpSaFpXSXpOemRtT1RCbFpXUmlZak0wTWpWbU5tSTNOR1kzTkRGbGMweFVhelpYWlVScWFIa2lMQ0p6WTI5d1pTSTZXeUp5WldGa0lsMTkuaUZlNGc5SEt3bFJTUUxmQ29ZQmVOWkdKX05wMXBWd3pGaU5QdWg0MGtWTSIsImV4cCI6MTY5MjAxODQzMCwiaWF0IjoxNjkxOTc1MjMwLCJqdGkiOiIwNmZlYzk2Yy01MmRlLTQ0NGMtODU4MS00MzA2YzJmZWM2MDUifQ.GDqHMx2xcAYWDqpIr0Z5OuRB8UEIYIKX1x2CNfe9294";
-    private final static String COOKIE_PROD = "undefined__tenant=AYEOSUMI; undefined__project=AYEOSUMI; undefined__workspace=prod; undefined__region=0000000001; 0000020314__tenant=AYEOSUMI; 0000020314__project=AYEOSUMI; 0000020314__workspace=prod; 0000020314__region=0000000001; ctoken=bigfish_ctoken_18i40igh85; csrfToken=Mv5l9z3vy1B7JA9lxF5zwNS8; cic-ctoken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcHBJZCIsImFwcElkIjoiZGIzZWIyNWQ4MWRmMDQ3YWZmNmZjM2JmZjAwZjUxM2FSazBlVTdOVUxtbSIsImFjY2Vzc1Rva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhkV1FpT2xzaVpXNTBaWEp3Y21selpWOXRiMkpwYkdWZmNtVnpiM1Z5WTJVaUxDSmlabVpmWVhCcFgzSmxjMjkxY21ObElsMHNJbVY0Y0NJNk1UWTVNakF4T1RVeE5Td2lkWE5sY2w5dVlXMWxJam9pTVRBeE1EQXdNVFV4TUNJc0ltcDBhU0k2SW1NMU5qVmtaV0UwTFRBM09XRXRORFF3TnkxaVpUSXhMV1JoWVdJMk4ySm1ZV1kzTVNJc0ltTnNhV1Z1ZEY5cFpDSTZJbVJpTTJWaU1qVmtPREZrWmpBME4yRm1aalptWXpOaVptWXdNR1kxTVROaFVtc3daVlUzVGxWTWJXMGlMQ0p6WTI5d1pTSTZXeUp5WldGa0lsMTkuTEhtSWNoQmdxWUdBV1Fpdy0wQ0JXb1FSMThtTnZzWXFiV1R3TXVCNnp0VSIsImV4cCI6MTY5MjAxOTUxNCwiaWF0IjoxNjkxOTc2MzE1LCJqdGkiOiIwMjVmZGI3Zi1mNmUwLTRmNzMtODIyZC1iM2VjM2VlNGRiNGIifQ.GpZ1yhYvZ0Ge9ZX-PS1Zk49fAk88Nq6UBLRWXdLXcv0";
-    private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\代理合约814.xlsx";
-    /**
-     * Excel文件地址
-     */
-    private static final String WJH_FILE_PATH = "E:\\WJH.csv";
-    /**
-     * 获取restTemplate
-     */
-    private final RestTemplate restTemplate = new RestTemplate();
+    private static final String SYNC_AGREEMENT_PATH_NAME = "E:\\xxx.xlsx";
+    private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\xxx.xlsx";
+    private final static String COOKIE_PT = "";
+    private final static String COOKIE_PROD = "";
+
     @Autowired
     private IDeskService deskService;
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    /**
+     * 批量同步协议到议价平台(使用前更新环境和文件地址)
+     */
+    @Test
+    public void syncAgreement() {
+        String str = "xxx";
+
+        String SIGNATURE_URL = null;
+        String PROTOCOL_URL = null;
+        if ("prod".equals(str)) {
+            SIGNATURE_URL = PROD_SIGNATURE_URL;
+            PROTOCOL_URL = PROD_PROTOCOL_URL;
+        } else if ("uat".equals(str)) {
+            SIGNATURE_URL = UAT_SIGNATURE_URL;
+            PROTOCOL_URL = UAT_PROTOCOL_URL;
+        }
+
+        // 解析Excel
+        List<AgreementExcel> agreementList = ExcelUtils.readExcelWithCheck(
+                AgreementExcel.class,
+                new File(SYNC_AGREEMENT_PATH_NAME)
+        );
+
+        // 计数
+        int count = 1;
+        int size = agreementList.size();
+        SignatureRequestDTO signatureRequestDTO = new SignatureRequestDTO(100);
+
+        // 遍历Excel数据
+        for (AgreementExcel agreement : agreementList) {
+
+            // 获取签名
+            ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(SIGNATURE_URL, signatureRequestDTO, SignatureResponseDTO.class);
+
+            if (response.getBody() == null) {
+                log.info("获取第{}/{}条签名失败, 协议号为{}！", count, size, agreement.getAgreementNo());
+                continue;
+            }
+
+            // 填充签名数据
+            PartnerProtocolRequestDTO protocolRequestDTO = getPartnerProtocolRequestDTO(response);
+
+            // 填充合约数据
+            setAgreement(agreement, protocolRequestDTO);
+
+            try {
+                // 同步到议价
+                log.info("同步第{}/{}条合作伙伴协议信息到议价平台, request: {}", count, size, JSON.toJSONString(protocolRequestDTO));
+                ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
+                log.info("第{}/{}条{}, response:{}", count, size, protocolRequestDTO.getData().getAgentProtocolCode(), JSON.toJSONString(postForEntity.getBody()));
+            } catch (Exception e) {
+                log.error("同步第{}/{}条合作伙伴协议信息到议价平台失败", count, size);
+            }
+
+            count++;
+        }
+    }
+
+    /**
+     * 根据代理合约补充合作合约(使用之前确认环境，并更新COOKIE和文件地址)
+     */
+    @Test
+    public void agreementSync() {
+        String str = "xxx";
+
+        String AGR_URL = null;
+        String ECO_URL = null;
+        String COOKIE = null;
+        if ("prod".equals(str)) {
+            AGR_URL = AGR_PROD_URL;
+            ECO_URL = ECOLOGY_PROD_URL;
+            COOKIE = COOKIE_PROD;
+        } else if ("pt".equals(str)) {
+            AGR_URL = AGR_PT_URL;
+            ECO_URL = ECOLOGY_PT_URL;
+            COOKIE = COOKIE_PT;
+        }
+
+        // 解析EXCEL
+        List<AgreementSyncExcelDTO> agreementList = ExcelUtils.readExcelWithCheck(
+                AgreementSyncExcelDTO.class,
+                new File(AGREEMENT_SYNC_PATH_NAME)
+        );
+
+        int count = 1;
+        int size = agreementList.size();
+
+        // 遍历excel数据
+        for (AgreementSyncExcelDTO agreement : agreementList) {
+
+            // 获取合约号版本号
+            AgreementQueryRequestDTO agreementQueryDTO = getAgreementQueryRequestDTO(agreement);
+
+            // 根据合约号版本号获取合约域信息
+            ResponseEntity<AgreementQueryResponseDTO> agrEntity = restTemplate.postForEntity(AGR_URL + GET_AGREEMENT_BY_NO_VERSION, agreementQueryDTO, AgreementQueryResponseDTO.class);
+
+            if (agrEntity.getBody().getData() == null) {
+                log.info("第{}/{}条，根据合约号：{}，版本号：{}，查询合约域合约失败！", count, size, agreementQueryDTO.getAgreementNo(), agreementQueryDTO.getAgreementMajorVersionNo());
+                count++;
+                continue;
+            }
+
+            // 获取到合约域合约
+            AgreementDTO agreementDTO = agrEntity.getBody().getData();
+
+            log.info("第{}/{}条，根据合约号：{}，版本号：{}，得到合约域合约：{}", count, size, agreementQueryDTO.getAgreementNo(), agreementQueryDTO.getAgreementMajorVersionNo(), JSON.toJSONString(agreementDTO));
+
+            // 获取甲乙方
+            AgreementParticipantDTO participant = getAgreementParticipant(agreementDTO);
+
+            if (participant == null) {
+                log.info("第{}/{}条，获取甲乙方失败！", count, size);
+                count++;
+                continue;
+            }
+
+            // 创建pageDTO
+            ApprovalDocOdPageDTO approvalDocOdPageDTO = getApprovalDocOdPageDTO(ECO_URL, count, agreement, agreementDTO, participant);
+
+            log.info("第{}/{}条，commitApproval入参：{}", count, size, JSON.toJSONString(approvalDocOdPageDTO));
+
+            // 组装commitApproval接口入参
+            HttpEntity<String> pageHttpEntity = getCommitApprovalHttpEntity(COOKIE, approvalDocOdPageDTO);
+
+            // 调用commitApproval接口
+            ResponseEntity<CommitApprovalResponseDTO> commitApprovalEntity = restTemplate.exchange(ECO_URL + COMMIT_APPROVAL, HttpMethod.POST, pageHttpEntity, CommitApprovalResponseDTO.class);
+
+            if (commitApprovalEntity.getBody().getData() == null) {
+                log.info("第{}/{}条，提交审批失败！", count, size);
+                count++;
+                continue;
+            }
+
+            // 得到审批单号approvalDocCode
+            String approvalDocCode = commitApprovalEntity.getBody().getData();
+            log.info("第{}/{}条，审批单号为{}！", count, size, approvalDocCode);
+
+            // 创建approvalResultDTO
+            ApprovalResultRequestDTO approvalResultRequestDTO = getApprovalResultRequestDTO(approvalDocCode);
+
+            // 组装approvalResult接口入参
+            HttpEntity<String> approvalHttpEntity = getApprovalResultHttpEntity(COOKIE, approvalResultRequestDTO);
+
+            // 调用approvalResult接口
+            ResponseEntity<ApprovalResultResponseDTO> approvalResultEntity = restTemplate.exchange(ECO_URL + APPROVAL_RESULT, HttpMethod.POST, approvalHttpEntity, ApprovalResultResponseDTO.class);
+
+            if (approvalResultEntity.getBody().getData() != null && approvalResultEntity.getBody().getData().equals("success")) {
+                log.info("同步第{}/{}条成功", count, size);
+            } else {
+                log.info("同步第{}/{}条失败", count, size);
+            }
+
+            count++;
+
+        }
+    }
 
     private void setAgreement(AgreementExcel agreement, PartnerProtocolRequestDTO protocolRequestDTO) {
         ProtocolRequestDataDTO data = new ProtocolRequestDataDTO();
@@ -174,13 +319,6 @@ class ApplicationStartUpTest {
         agreementQueryDTO.setAgreementMajorVersionNo(getMajorVersion(agreement));
         agreementQueryDTO.setAgreementMinorVersionNo("0");
         return agreementQueryDTO;
-    }
-
-    private List<AgreementSyncExcelDTO> getAgreementSyncExcelDTOS() {
-        return ExcelUtils.readExcelWithCheck(
-                AgreementSyncExcelDTO.class,
-                new File(AGREEMENT_SYNC_PATH_NAME)
-        );
     }
 
     private void setStrategyDTO(String ECO_URL, int count, AgreementSyncExcelDTO agreement, ApprovalDocOdPageDTO approvalDocOdPageDTO) {
@@ -300,214 +438,6 @@ class ApplicationStartUpTest {
             return approvalDocOrgDTOS;
         }
         return null;
-    }
-
-    /**
-     * 批量同步协议到议价平台(使用前更新环境和文件地址)
-     */
-    @Test
-    public void syncAgreement() {
-        String str = "xxx";
-
-        String SIGNATURE_URL = null;
-        String PROTOCOL_URL = null;
-        if ("prod".equals(str)) {
-            SIGNATURE_URL = PROD_SIGNATURE_URL;
-            PROTOCOL_URL = PROD_PROTOCOL_URL;
-        } else if ("uat".equals(str)) {
-            SIGNATURE_URL = UAT_SIGNATURE_URL;
-            PROTOCOL_URL = UAT_PROTOCOL_URL;
-        }
-
-        // 解析Excel
-        List<AgreementExcel> agreementList = ExcelUtils.readExcelWithCheck(
-                AgreementExcel.class,
-                new File(PATH_NAME)
-        );
-
-        // 计数
-        int count = 1;
-        int size = agreementList.size();
-        SignatureRequestDTO signatureRequestDTO = new SignatureRequestDTO(100);
-
-        // 遍历Excel数据
-        for (AgreementExcel agreement : agreementList) {
-
-            // 获取签名
-            ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(SIGNATURE_URL, signatureRequestDTO, SignatureResponseDTO.class);
-
-            if (response.getBody() == null) {
-                log.info("获取第{}/{}条签名失败, 协议号为{}！", count, size, agreement.getAgreementNo());
-                continue;
-            }
-
-            // 填充签名数据
-            PartnerProtocolRequestDTO protocolRequestDTO = getPartnerProtocolRequestDTO(response);
-
-            // 填充合约数据
-            setAgreement(agreement, protocolRequestDTO);
-
-            try {
-                // 同步到议价
-                log.info("同步第{}/{}条合作伙伴协议信息到议价平台, request: {}", count, size, JSON.toJSONString(protocolRequestDTO));
-                ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
-                log.info("第{}/{}条{}, response:{}", count, size, protocolRequestDTO.getData().getAgentProtocolCode(), JSON.toJSONString(postForEntity.getBody()));
-            } catch (Exception e) {
-                log.error("同步第{}/{}条合作伙伴协议信息到议价平台失败", count, size);
-            }
-
-            count++;
-        }
-    }
-
-    /**
-     * 根据代理合约补充合作合约(使用之前确认环境，并更新COOKIE和文件地址)
-     */
-    @Test
-    public void agreementSync() {
-        String str = "xxx";
-
-        String AGR_URL = null;
-        String ECO_URL = null;
-        String COOKIE = null;
-        if ("prod".equals(str)) {
-            AGR_URL = AGR_PROD_URL;
-            ECO_URL = ECOLOGY_PROD_URL;
-            COOKIE = COOKIE_PROD;
-        } else if ("pt".equals(str)) {
-            AGR_URL = AGR_PT_URL;
-            ECO_URL = ECOLOGY_PT_URL;
-            COOKIE = COOKIE_PT;
-        }
-
-        // 解析excel
-        List<AgreementSyncExcelDTO> agreementList = getAgreementSyncExcelDTOS();
-
-        int count = 1;
-        int size = agreementList.size();
-
-        // 遍历excel数据
-        for (AgreementSyncExcelDTO agreement : agreementList) {
-
-            // 获取合约号版本号
-            AgreementQueryRequestDTO agreementQueryDTO = getAgreementQueryRequestDTO(agreement);
-
-            // 根据合约号版本号获取合约域信息
-            ResponseEntity<AgreementQueryResponseDTO> agrEntity = restTemplate.postForEntity(AGR_URL + GET_AGREEMENT_BY_NO_VERSION, agreementQueryDTO, AgreementQueryResponseDTO.class);
-
-            if (agrEntity.getBody().getData() == null) {
-                log.info("第{}/{}条，根据合约号：{}，版本号：{}，查询合约域合约失败！", count, size, agreementQueryDTO.getAgreementNo(), agreementQueryDTO.getAgreementMajorVersionNo());
-                count++;
-                continue;
-            }
-
-            // 获取到合约域合约
-            AgreementDTO agreementDTO = agrEntity.getBody().getData();
-
-            log.info("第{}/{}条，根据合约号：{}，版本号：{}，得到合约域合约：{}", count, size, agreementQueryDTO.getAgreementNo(), agreementQueryDTO.getAgreementMajorVersionNo(), JSON.toJSONString(agreementDTO));
-
-            // 获取甲乙方
-            AgreementParticipantDTO participant = getAgreementParticipant(agreementDTO);
-
-            if (participant == null) {
-                log.info("第{}/{}条，获取甲乙方失败！", count, size);
-                count++;
-                continue;
-            }
-
-            // 创建pageDTO
-            ApprovalDocOdPageDTO approvalDocOdPageDTO = getApprovalDocOdPageDTO(ECO_URL, count, agreement, agreementDTO, participant);
-
-            log.info("第{}/{}条，commitApproval入参：{}", count, size, JSON.toJSONString(approvalDocOdPageDTO));
-
-            // 组装commitApproval接口入参
-            HttpEntity<String> pageHttpEntity = getCommitApprovalHttpEntity(COOKIE, approvalDocOdPageDTO);
-
-            // 调用commitApproval接口
-            ResponseEntity<CommitApprovalResponseDTO> commitApprovalEntity = restTemplate.exchange(ECO_URL + COMMIT_APPROVAL, HttpMethod.POST, pageHttpEntity, CommitApprovalResponseDTO.class);
-
-            if (commitApprovalEntity.getBody().getData() == null) {
-                log.info("第{}/{}条，提交审批失败！", count, size);
-                count++;
-                continue;
-            }
-
-            // 得到审批单号approvalDocCode
-            String approvalDocCode = commitApprovalEntity.getBody().getData();
-            log.info("第{}/{}条，审批单号为{}！", count, size, approvalDocCode);
-
-            // 创建approvalResultDTO
-            ApprovalResultRequestDTO approvalResultRequestDTO = getApprovalResultRequestDTO(approvalDocCode);
-
-            // 组装approvalResult接口入参
-            HttpEntity<String> approvalHttpEntity = getApprovalResultHttpEntity(COOKIE, approvalResultRequestDTO);
-
-            // 调用approvalResult接口
-            ResponseEntity<ApprovalResultResponseDTO> approvalResultEntity = restTemplate.exchange(ECO_URL + APPROVAL_RESULT, HttpMethod.POST, approvalHttpEntity, ApprovalResultResponseDTO.class);
-
-            if (approvalResultEntity.getBody().getData() != null && approvalResultEntity.getBody().getData().equals("success")) {
-                log.info("同步第{}/{}条成功", count, size);
-            } else {
-                log.info("同步第{}/{}条失败", count, size);
-            }
-
-            count++;
-
-        }
-    }
-
-    /**
-     * 数据库测试方法
-     */
-    @Test
-    public void dbTest() {
-        LambdaQueryWrapper<DeskModel> deskQueryWrapper = new LambdaQueryWrapper<>();
-        deskQueryWrapper.eq(DeskModel::getDeskId, 1);
-        List<DeskModel> list = deskService.list(deskQueryWrapper);
-        System.out.println(list);
-    }
-
-    @Test
-    public void WJH() {
-        List<WJH> wjhs = ExcelUtils.readExcelWithCheck(
-                WJH.class,
-                new File(WJH_FILE_PATH)
-        );
-        BufferedWriter bw;
-        List<WJH> tempList = new ArrayList<>();
-        String idExposure = wjhs.get(0).getIdExposure();
-        int i = 1;
-        for (WJH wjh : wjhs) {
-            if (idExposure.equals(wjh.getIdExposure())) {
-                tempList.add(wjh);
-            } else {
-                try {
-                    creatTxt(tempList, i);
-                    idExposure = wjh.getIdExposure();
-                    tempList = new ArrayList<>();
-                    tempList.add(wjh);
-                    i += 1;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        try {
-            creatTxt(tempList, i);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void creatTxt(List<WJH> tempList, int i) throws IOException {
-        BufferedWriter bw;
-        bw = new BufferedWriter(new FileWriter("E:/WJH/" + i + ".txt"));
-        for (WJH wjh : tempList) {
-            bw.write(wjh.getSNP());
-            bw.newLine();
-            bw.flush();
-        }
-        bw.close();
     }
 
 }

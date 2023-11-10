@@ -1,4 +1,7 @@
 spring:
+  #项目名称
+  application:
+    name: leetcode
   #数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
