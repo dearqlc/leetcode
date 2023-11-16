@@ -8,19 +8,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import pers.qlc.leetcode.ApplicationStartUp;
-import pers.qlc.leetcode.dto.AgreementExcel;
 import pers.qlc.leetcode.dto.AgreementSyncExcelDTO;
 import pers.qlc.leetcode.dto.param.*;
-import pers.qlc.leetcode.dto.request.*;
+import pers.qlc.leetcode.dto.request.AffiliatedQueryRequestDTO;
+import pers.qlc.leetcode.dto.request.AgreementQueryRequestDTO;
+import pers.qlc.leetcode.dto.request.ApprovalResultRequestDTO;
+import pers.qlc.leetcode.dto.request.ProtocolRequestDataDTO;
 import pers.qlc.leetcode.dto.response.*;
 import pers.qlc.leetcode.enums.PartnerChannelMappingEnum;
-import pers.qlc.leetcode.service.IDeskService;
+import pers.qlc.leetcode.syncAgr.*;
 import pers.qlc.leetcode.util.ExcelUtils;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,33 +46,27 @@ import static pers.qlc.leetcode.constant.UrlConstant.*;
 @SpringBootTest(classes = ApplicationStartUp.class)
 class ApplicationStartUpTest {
 
+    private final RestTemplate restTemplate = new RestTemplate();
     /**
      * Excel文件地址
      */
-    private static final String SYNC_AGREEMENT_PATH_NAME = "E:\\xxx.xlsx";
-    private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\xxx.xlsx";
-    private final static String COOKIE_PT = "";
-    private final static String COOKIE_PROD = "";
-
-    @Autowired
-    private IDeskService deskService;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private static final String SYNC_AGREEMENT_PATH_NAME = "E:\\231116定价新疆.xlsx";
 
     /**
      * 批量同步协议到议价平台(使用前更新环境和文件地址)
      */
     @Test
     public void syncAgreement() {
-        String str = "xxx";
+        String str = "uat";
 
         String SIGNATURE_URL = null;
         String PROTOCOL_URL = null;
         if ("prod".equals(str)) {
-            SIGNATURE_URL = PROD_SIGNATURE_URL;
-            PROTOCOL_URL = PROD_PROTOCOL_URL;
+            SIGNATURE_URL = "http://10.206.192.117:80/irdp/sign/getSignature";
+            PROTOCOL_URL = "http://10.206.192.117:80/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
         } else if ("uat".equals(str)) {
-            SIGNATURE_URL = UAT_SIGNATURE_URL;
-            PROTOCOL_URL = UAT_PROTOCOL_URL;
+            SIGNATURE_URL = "http://10.207.132.176:8000/irdp/sign/getSignature";
+            PROTOCOL_URL = "http://10.207.132.176:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
         }
 
         // 解析Excel
@@ -113,6 +109,10 @@ class ApplicationStartUpTest {
             count++;
         }
     }
+
+    private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\xxx.xlsx";
+    private final static String COOKIE_PT = "";
+    private final static String COOKIE_PROD = "";
 
     /**
      * 根据代理合约补充合作合约(使用之前确认环境，并更新COOKIE和文件地址)
@@ -226,7 +226,7 @@ class ApplicationStartUpTest {
         data.setIsPriceFee("2");
         String partnerLv4TypeCode = agreement.getRoleId().substring(0, 7);
         data.setOrgChannel(PartnerChannelMappingEnum.getChannelByLevel4(partnerLv4TypeCode));
-        data.setPartnerSystemType(ARR_OF_4s.contains(partnerLv4TypeCode) ? YES_4S : NO_4S);
+        data.setPartnerSystemType(new ArrayList<>(Arrays.asList("A010102", "A010101")).contains(partnerLv4TypeCode) ? "1" : "0");
         protocolRequestDTO.setData(data);
     }
 

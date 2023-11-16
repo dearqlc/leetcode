@@ -1,4 +1,4 @@
-package pers.qlc.leetcode.dto;
+package pers.qlc.leetcode.syncAgr;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;

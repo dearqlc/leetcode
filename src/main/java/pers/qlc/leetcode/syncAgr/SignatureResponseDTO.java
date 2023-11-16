@@ -1,6 +1,7 @@
-package pers.qlc.leetcode.dto.response;
+package pers.qlc.leetcode.syncAgr;
 
 import lombok.Data;
+import pers.qlc.leetcode.dto.response.SignatureResponseDataDTO;
 
 /**
  * @Author QLC

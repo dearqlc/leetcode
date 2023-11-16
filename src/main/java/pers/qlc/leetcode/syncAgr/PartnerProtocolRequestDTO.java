@@ -1,7 +1,8 @@
-package pers.qlc.leetcode.dto.request;
+package pers.qlc.leetcode.syncAgr;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pers.qlc.leetcode.dto.request.ProtocolRequestDataDTO;
 
 /**
  * @Author QLC

@@ -1,39 +1,6 @@
 package pers.qlc.leetcode.constant;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class UrlConstant {
-
-    public static final String YES_4S = "1";
-
-    public static final String NO_4S = "0";
-
-    /**
-     * 4s店集合
-     */
-    public static final List<String> ARR_OF_4s = new ArrayList<>(Arrays.asList("A010102", "A010101"));
-
-    /**
-     * PROD签名地址
-     */
-    public static final String PROD_SIGNATURE_URL = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.SIGNATURE;
-
-    /**
-     * PROD同步协议地址
-     */
-    public static final String PROD_PROTOCOL_URL = HttpConstant.PREFIX + HttpConstant.PROD_HOST + HttpConstant.PROTOCOL;
-
-    /**
-     * UAT签名地址
-     */
-    public static final String UAT_SIGNATURE_URL = HttpConstant.PREFIX + HttpConstant.UAT_HOST + HttpConstant.SIGNATURE;
-
-    /**
-     * UAT同步协议地址
-     */
-    public static final String UAT_PROTOCOL_URL = HttpConstant.PREFIX + HttpConstant.UAT_HOST + HttpConstant.PROTOCOL;
 
     /**
      * 合作伙伴生产域名
@@ -74,4 +41,5 @@ public class UrlConstant {
      * 根据roleId查询代理挂靠
      */
     public final static String AFFILIATED_QUERY = "/platform/api/ecology/performance/query-affiliated-partner-list";
+
 }

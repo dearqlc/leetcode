@@ -1,4 +1,4 @@
-package pers.qlc.leetcode.dto.request;
+package pers.qlc.leetcode.syncAgr;
 
 
 import lombok.AllArgsConstructor;
