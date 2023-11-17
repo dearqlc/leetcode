@@ -47,26 +47,28 @@ import static pers.qlc.leetcode.constant.UrlConstant.*;
 class ApplicationStartUpTest {
 
     private final RestTemplate restTemplate = new RestTemplate();
+
     /**
-     * Excel文件地址
+     * 环境(填UAT或PROD)
+     */
+    private static final String ENV = "UAT";
+    /**
+     * 文件地址
      */
     private static final String SYNC_AGREEMENT_PATH_NAME = "E:\\xxx.xlsx";
-    private static final String UAT = "UAT";
-    private static final String PROD = "PROD";
 
     /**
      * 批量同步协议到议价平台(使用前更新环境和文件地址)
      */
     @Test
     public void syncAgreement() {
-        String ENV = UAT;
 
         String SIGNATURE_URL = null;
         String PROTOCOL_URL = null;
-        if (UAT.equals(ENV)) {
+        if ("UAT".equals(ENV)) {
             SIGNATURE_URL = "http://10.206.192.117:80/irdp/sign/getSignature";
             PROTOCOL_URL = "http://10.206.192.117:80/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
-        } else if (PROD.equals(ENV)) {
+        } else if ("PROD".equals(ENV)) {
             SIGNATURE_URL = "http://10.207.132.176:8000/irdp/sign/getSignature";
             PROTOCOL_URL = "http://10.207.132.176:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
         }
@@ -101,20 +103,20 @@ class ApplicationStartUpTest {
 
             try {
                 // 同步到议价
-                log.info("同步第{}/{}条合作伙伴协议信息到议价平台" + ENV +"环境, request: {}", count, size, JSON.toJSONString(protocolRequestDTO));
+                log.info("同步第{}/{}条合作伙伴协议信息到议价平台" + ENV + "环境, request: {}", count, size, JSON.toJSONString(protocolRequestDTO));
                 ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
                 log.info("第{}/{}条{}, response:{}", count, size, protocolRequestDTO.getData().getAgentProtocolCode(), JSON.toJSONString(postForEntity.getBody()));
             } catch (Exception e) {
-                log.error("同步第{}/{}条合作伙伴协议信息到议价平台" + ENV +"环境失败", count, size);
+                log.error("同步第{}/{}条合作伙伴协议信息到议价平台" + ENV + "环境失败", count, size);
             }
 
             count++;
         }
     }
 
-    private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\xxx.xlsx";
     private final static String COOKIE_PT = "";
     private final static String COOKIE_PROD = "";
+    private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\xxx.xlsx";
 
     /**
      * 根据代理合约补充合作合约(使用之前确认环境，并更新COOKIE和文件地址)
