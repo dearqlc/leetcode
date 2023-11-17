@@ -59,14 +59,14 @@ class ApplicationStartUpTest {
      */
     @Test
     public void syncAgreement() {
-        String str = UAT;
+        String ENV = UAT;
 
         String SIGNATURE_URL = null;
         String PROTOCOL_URL = null;
-        if ("PROD".equals(str)) {
+        if (UAT.equals(ENV)) {
             SIGNATURE_URL = "http://10.206.192.117:80/irdp/sign/getSignature";
             PROTOCOL_URL = "http://10.206.192.117:80/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
-        } else if ("UAT".equals(str)) {
+        } else if (PROD.equals(ENV)) {
             SIGNATURE_URL = "http://10.207.132.176:8000/irdp/sign/getSignature";
             PROTOCOL_URL = "http://10.207.132.176:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
         }
@@ -101,11 +101,11 @@ class ApplicationStartUpTest {
 
             try {
                 // 同步到议价
-                log.info("同步第{}/{}条合作伙伴协议信息到议价平台" + str +"环境, request: {}", count, size, JSON.toJSONString(protocolRequestDTO));
+                log.info("同步第{}/{}条合作伙伴协议信息到议价平台" + ENV +"环境, request: {}", count, size, JSON.toJSONString(protocolRequestDTO));
                 ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
                 log.info("第{}/{}条{}, response:{}", count, size, protocolRequestDTO.getData().getAgentProtocolCode(), JSON.toJSONString(postForEntity.getBody()));
             } catch (Exception e) {
-                log.error("同步第{}/{}条合作伙伴协议信息到议价平台" + str +"环境失败", count, size);
+                log.error("同步第{}/{}条合作伙伴协议信息到议价平台" + ENV +"环境失败", count, size);
             }
 
             count++;
