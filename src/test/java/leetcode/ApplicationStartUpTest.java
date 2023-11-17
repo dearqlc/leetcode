@@ -50,21 +50,23 @@ class ApplicationStartUpTest {
     /**
      * Excel文件地址
      */
-    private static final String SYNC_AGREEMENT_PATH_NAME = "E:\\231116定价新疆.xlsx";
+    private static final String SYNC_AGREEMENT_PATH_NAME = "E:\\xxx.xlsx";
+    private static final String UAT = "UAT";
+    private static final String PROD = "PROD";
 
     /**
      * 批量同步协议到议价平台(使用前更新环境和文件地址)
      */
     @Test
     public void syncAgreement() {
-        String str = "uat";
+        String str = UAT;
 
         String SIGNATURE_URL = null;
         String PROTOCOL_URL = null;
-        if ("prod".equals(str)) {
+        if ("PROD".equals(str)) {
             SIGNATURE_URL = "http://10.206.192.117:80/irdp/sign/getSignature";
             PROTOCOL_URL = "http://10.206.192.117:80/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
-        } else if ("uat".equals(str)) {
+        } else if ("UAT".equals(str)) {
             SIGNATURE_URL = "http://10.207.132.176:8000/irdp/sign/getSignature";
             PROTOCOL_URL = "http://10.207.132.176:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
         }
@@ -99,11 +101,11 @@ class ApplicationStartUpTest {
 
             try {
                 // 同步到议价
-                log.info("同步第{}/{}条合作伙伴协议信息到议价平台, request: {}", count, size, JSON.toJSONString(protocolRequestDTO));
+                log.info("同步第{}/{}条合作伙伴协议信息到议价平台" + str +"环境, request: {}", count, size, JSON.toJSONString(protocolRequestDTO));
                 ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
                 log.info("第{}/{}条{}, response:{}", count, size, protocolRequestDTO.getData().getAgentProtocolCode(), JSON.toJSONString(postForEntity.getBody()));
             } catch (Exception e) {
-                log.error("同步第{}/{}条合作伙伴协议信息到议价平台失败", count, size);
+                log.error("同步第{}/{}条合作伙伴协议信息到议价平台" + str +"环境失败", count, size);
             }
 
             count++;
