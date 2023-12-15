@@ -79,4 +79,14 @@ public class ProtocolRequestDataDTO {
      */
     private String partnerSystemType;
 
+    /**
+     * 合作伙伴细分二级代码
+     */
+    private String partnerLv4TypeCode;
+
+    /**
+     * 合作伙伴细分二级名称
+     */
+    private String partnerLv4TypeName;
+
 }

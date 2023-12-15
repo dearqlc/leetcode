@@ -6,6 +6,7 @@ import com.aliyun.fsi.insurance.agreement.facade.dto.DepartmentDTO;
 import com.aliyun.fsi.insurance.agreement.facade.dto.ParticipantDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,7 @@ import pers.qlc.leetcode.dto.request.ApprovalResultRequestDTO;
 import pers.qlc.leetcode.dto.request.ProtocolRequestDataDTO;
 import pers.qlc.leetcode.dto.response.*;
 import pers.qlc.leetcode.enums.PartnerChannelMappingEnum;
+import pers.qlc.leetcode.enums.PartnerTypeEnum;
 import pers.qlc.leetcode.syncAgr.*;
 import pers.qlc.leetcode.util.ExcelUtils;
 
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static pers.qlc.leetcode.constant.UrlConstant.*;
@@ -51,7 +54,7 @@ class ApplicationStartUpTest {
     /**
      * 环境(填UAT或PROD)
      */
-    private static final String ENV = "UAT";
+    private static final String ENV = "XXX";
     /**
      * 文件地址
      */
@@ -65,10 +68,10 @@ class ApplicationStartUpTest {
 
         String SIGNATURE_URL = null;
         String PROTOCOL_URL = null;
-        if ("UAT".equals(ENV)) {
+        if ("PROD".equals(ENV)) {
             SIGNATURE_URL = "http://10.206.192.117:80/irdp/sign/getSignature";
             PROTOCOL_URL = "http://10.206.192.117:80/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
-        } else if ("PROD".equals(ENV)) {
+        } else if ("UAT".equals(ENV)) {
             SIGNATURE_URL = "http://10.207.132.176:8000/irdp/sign/getSignature";
             PROTOCOL_URL = "http://10.207.132.176:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
         }
@@ -230,6 +233,8 @@ class ApplicationStartUpTest {
         data.setIsPriceFee("2");
         String partnerLv4TypeCode = agreement.getRoleId().substring(0, 7);
         data.setOrgChannel(PartnerChannelMappingEnum.getChannelByLevel4(partnerLv4TypeCode));
+        data.setPartnerLv4TypeCode(partnerLv4TypeCode);
+        data.setPartnerLv4TypeName(PartnerTypeEnum.getNameByCode(partnerLv4TypeCode));
         data.setPartnerSystemType(new ArrayList<>(Arrays.asList("A010102", "A010101")).contains(partnerLv4TypeCode) ? "1" : "0");
         protocolRequestDTO.setData(data);
     }
@@ -444,4 +449,275 @@ class ApplicationStartUpTest {
         return null;
     }
 
+    @Test
+    public void t0() {
+        // 解析Excel
+        List<AssessorDTO> assessorDTOS = ExcelUtils.readExcelWithCheck(
+                AssessorDTO.class,
+                new File("E:\\公估人员导入模板.xlsx")
+        );
+        assessorDTOS = assessorDTOS.stream().filter(assessorDTO -> StringUtils.isNotBlank(assessorDTO.getPhone())).collect(Collectors.toList());
+        System.out.println(assessorDTOS);
+    }
+
+    @Test
+    public void t1() {
+        // 解析EXCEL并根据注解完成必填校验及正则规则校验
+        List<AssessorDTO> assessorDTOList = ExcelUtils.readExcelWithCheck(AssessorDTO.class, new File("E:\\公估人员导入模板.xlsx"));
+        // 去掉第一行(填写要求)
+        assessorDTOList.remove(0);
+        // 校验
+        for (AssessorDTO assessorDTO : assessorDTOList) {
+            if (StringUtils.isBlank(assessorDTO.getName())
+                    && StringUtils.isBlank(assessorDTO.getWorkAreas())
+                    && StringUtils.isBlank(assessorDTO.getIsConcentrateCic())
+                    && StringUtils.isBlank(assessorDTO.getQualifyNo())
+                    && StringUtils.isBlank(assessorDTO.getIdentityNo())
+                    && StringUtils.isBlank(assessorDTO.getPhone())
+                    && StringUtils.isBlank(assessorDTO.getMail())
+                    && StringUtils.isBlank(assessorDTO.getOrgCode())
+                    && StringUtils.isBlank(assessorDTO.getExternalHead())
+                    && StringUtils.isBlank(assessorDTO.getResponsibleInsurance())) {
+                continue;
+            }
+            if (StringUtils.isBlank(assessorDTO.getName())
+                    || StringUtils.isBlank(assessorDTO.getWorkAreas())
+                    || StringUtils.isBlank(assessorDTO.getIsConcentrateCic())
+                    || StringUtils.isBlank(assessorDTO.getIdentityNo())
+                    || StringUtils.isBlank(assessorDTO.getPhone())
+                    || StringUtils.isBlank(assessorDTO.getOrgCode())
+                    || StringUtils.isBlank(assessorDTO.getResponsibleInsurance())) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("缺少必填参数!");
+                continue;
+            }
+            if (!assessorDTO.getWorkAreas().matches("^[0-9;；]+$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("作业行政区域格式不正确,请使用分号隔开!");
+                continue;
+            }
+            if (!isCardID(assessorDTO.getIdentityNo())) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("身份证格式不正确!");
+                continue;
+            }
+            if (!assessorDTO.getPhone().matches("^1\\d{10}$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("手机号格式不正确!");
+                continue;
+            }
+            if (StringUtils.isNotBlank(assessorDTO.getMail()) && !assessorDTO.getMail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("邮箱格式不正确!");
+                continue;
+            }
+            if (!assessorDTO.getOrgCode().matches("^[0-9]+$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("归属机构格式不正确!");
+                continue;
+            }
+            if (StringUtils.isNotBlank(assessorDTO.getExternalHead()) && !assessorDTO.getExternalHead().matches("^[0-9]+$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("负责人格式不正确!");
+                continue;
+            }
+            if (!assessorDTO.getResponsibleInsurance().matches("^[0-9;；]+$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("负责产品大类格式不正确,请使用分号隔开!");
+                continue;
+            }
+            assessorDTO.setResult("成功");
+        }
+        System.out.println("ok");
+    }
+
+    public boolean isCardID(String sId) {
+        String pattern = "^(\\d{15}$)|(\\d{17}(\\d|X|x)$)";
+        if (!Pattern.matches(pattern, sId)) {
+            return false;
+        }
+        // 身份证号码校验
+        int sum = 0;
+        int[] weights = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+        String codes = "10X98765432";
+        for (int i = 0; i < sId.length() - 1; i++) {
+            sum += Character.getNumericValue(sId.charAt(i)) * weights[i];
+        }
+        // 计算出来的最后一位身份证号码
+        char last = codes.charAt(sum % 11);
+        return sId.charAt(sId.length() - 1) == last;
+    }
+
+    @Test
+    public void t2() {
+        // 解析EXCEL并根据注解完成必填校验及正则规则校验
+        List<AssessorDTO> assessorDTOList = ExcelUtils.readExcelWithCheck(AssessorDTO.class, new File("E:\\公估人员导入模板.xlsx"));
+        // 去掉第一行(填写要求)
+        assessorDTOList.remove(0);
+        // 校验
+        for (AssessorDTO assessorDTO : assessorDTOList) {
+            if (StringUtils.isBlank(assessorDTO.getName())
+                    && StringUtils.isBlank(assessorDTO.getWorkAreas())
+                    && StringUtils.isBlank(assessorDTO.getIsConcentrateCic())
+                    && StringUtils.isBlank(assessorDTO.getQualifyNo())
+                    && StringUtils.isBlank(assessorDTO.getIdentityNo())
+                    && StringUtils.isBlank(assessorDTO.getPhone())
+                    && StringUtils.isBlank(assessorDTO.getMail())
+                    && StringUtils.isBlank(assessorDTO.getOrgCode())
+                    && StringUtils.isBlank(assessorDTO.getExternalHead())
+                    && StringUtils.isBlank(assessorDTO.getResponsibleInsurance())) {
+                continue;
+            }
+            if (StringUtils.isBlank(assessorDTO.getName())
+                    || StringUtils.isBlank(assessorDTO.getWorkAreas())
+                    || StringUtils.isBlank(assessorDTO.getIsConcentrateCic())
+                    || StringUtils.isBlank(assessorDTO.getIdentityNo())
+                    || StringUtils.isBlank(assessorDTO.getPhone())
+                    || StringUtils.isBlank(assessorDTO.getOrgCode())
+                    || StringUtils.isBlank(assessorDTO.getResponsibleInsurance())) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("缺少必填参数!");
+                continue;
+            }
+            if (!assessorDTO.getWorkAreas().matches("^[0-9;；]+$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("作业行政区域格式不正确,请使用分号隔开!");
+                continue;
+            }
+            if (!isCardID(assessorDTO.getIdentityNo())) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("身份证格式不正确!");
+                continue;
+            }
+            if (!assessorDTO.getPhone().matches("^1\\d{10}$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("手机号格式不正确!");
+                continue;
+            }
+            if (StringUtils.isNotBlank(assessorDTO.getMail()) && !assessorDTO.getMail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("邮箱格式不正确!");
+                continue;
+            }
+            if (!assessorDTO.getOrgCode().matches("^[0-9]+$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("归属机构格式不正确!");
+                continue;
+            }
+            if (StringUtils.isNotBlank(assessorDTO.getExternalHead()) && !assessorDTO.getExternalHead().matches("^[0-9]+$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("负责人格式不正确!");
+                continue;
+            }
+            if (!assessorDTO.getResponsibleInsurance().matches("^[0-9;；]+$")) {
+                assessorDTO.setResult("失败");
+                assessorDTO.setFailReason("负责产品大类格式不正确,请使用分号隔开!");
+                continue;
+            }
+            assessorDTO.setResult("成功");
+        }
+        System.out.println("ok");
+    }
+
+    private List<AssessorImportResponseAppDTO> toAssessorImportResponseAppDTOList(List<AssessorDTO> assessorDTOS, AssessImportRequestAppDTO appDTO) {
+        List<AssessorImportResponseAppDTO> appDTOS = new ArrayList<>();
+        for (AssessorDTO assessorDTO : assessorDTOS) {
+            if (StringUtils.isBlank(assessorDTO.getName())
+                    || StringUtils.isBlank(assessorDTO.getWorkAreas())
+                    || StringUtils.isBlank(assessorDTO.getIsConcentrateCic())
+                    || StringUtils.isBlank(assessorDTO.getIdentityNo())
+                    || StringUtils.isBlank(assessorDTO.getPhone())
+                    || StringUtils.isBlank(assessorDTO.getOrgCode())
+                    || StringUtils.isBlank(assessorDTO.getResponsibleInsurance())
+                    // 员工重复
+                    || (appDTO != null && CollectionUtils.isNotEmpty(appDTO.getAssessorRequestDTOList())
+                    && org.apache.commons.collections.CollectionUtils.isNotEmpty(appDTO.getAssessorRequestDTOList().stream().map(AssessorRequestAppDTO::getPhone).collect(Collectors.toList()))
+                    && appDTO.getAssessorRequestDTOList().stream().map(AssessorRequestAppDTO::getPhone).collect(Collectors.toList()).contains(assessorDTO.getPhone()))
+                    // 作业行政区域校验
+                    || !assessorDTO.getWorkAreas().matches("^[0-9;；]+$")
+                    // 身份证号校验
+                    || !isCardID(assessorDTO.getIdentityNo())
+                    // 手机号校验
+                    || !assessorDTO.getPhone().matches("^1\\d{10}$")
+                    // 邮箱校验
+                    || (StringUtils.isNotBlank(assessorDTO.getMail()) && !assessorDTO.getMail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"))
+                    // 归属机构校验
+                    || !assessorDTO.getOrgCode().matches("^[0-9]+$")
+                    // 负责人校验
+                    || (StringUtils.isNotBlank(assessorDTO.getExternalHead()) && !assessorDTO.getExternalHead().matches("^[0-9]+$"))
+                    // 负责产品大类校验
+                    || !assessorDTO.getResponsibleInsurance().matches("^[0-9;；]+$")) {
+                continue;
+            }
+            AssessorImportResponseAppDTO dto = new AssessorImportResponseAppDTO();
+            dto.setName(assessorDTO.getName());
+            dto.setWorkAreas(toWorkAreas(assessorDTO.getWorkAreas()));
+            if (assessorDTO.getIsConcentrateCic() != null) {
+                dto.setIsConcentrateCic(assessorDTO.getIsConcentrateCic().equals("是"));
+            }
+            dto.setQualifyNo(assessorDTO.getQualifyNo());
+            dto.setIdentityNo(assessorDTO.getIdentityNo());
+            dto.setPhone(assessorDTO.getPhone());
+            dto.setMail(assessorDTO.getMail());
+            dto.setOrgCode(assessorDTO.getOrgCode());
+            dto.setExternalHead(assessorDTO.getExternalHead());
+            dto.setResponsibleInsurance(toResponsibleInsurance(assessorDTO.getResponsibleInsurance()));
+            appDTOS.add(dto);
+        }
+        return appDTOS;
+    }
+
+    private List<InsuranceResponseAppDTO> toResponsibleInsurance(String responsibleInsurance) {
+        if (!responsibleInsurance.matches(".*[;；].*")) {
+            InsuranceResponseAppDTO insurance = new InsuranceResponseAppDTO();
+            insurance.setInsuranceCode(responsibleInsurance);
+            return new ArrayList<InsuranceResponseAppDTO>(){{
+                add(insurance);
+            }};
+        }
+        String[] insuranceCodeList = responsibleInsurance.split("[;；]");
+        if (insuranceCodeList == null || insuranceCodeList.length == 0) {
+            return null;
+        }
+        List<InsuranceResponseAppDTO> appDTOS = new ArrayList<>();
+        for (String insuranceCode : insuranceCodeList) {
+            if (StringUtils.isNotBlank(insuranceCode)) {
+                InsuranceResponseAppDTO appDTO = new InsuranceResponseAppDTO();
+                appDTO.setInsuranceCode(insuranceCode);
+                appDTOS.add(appDTO);
+            }
+        }
+        return appDTOS;
+    }
+
+    private List<AreaResponseAppDTO> toWorkAreas(String workAreas) {
+        if (!workAreas.matches(".*[;；].*")) {
+            AreaResponseAppDTO appDTO = new AreaResponseAppDTO();
+            appDTO.setAreaCode(workAreas);
+            return new ArrayList<AreaResponseAppDTO>(){{
+                add(appDTO);
+            }};
+        }
+        String[] areaCodeList = workAreas.split("[;；]");
+        if (areaCodeList == null || areaCodeList.length == 0) {
+            return null;
+        }
+        List<AreaResponseAppDTO> appDTOS = new ArrayList<>();
+        for (String areaCode : areaCodeList) {
+            if (StringUtils.isNotBlank(areaCode)) {
+                AreaResponseAppDTO appDTO = new AreaResponseAppDTO();
+                appDTO.setAreaCode(areaCode);
+                appDTOS.add(appDTO);
+            }
+        }
+        return appDTOS;
+    }
+
+    @Test
+    public void t3() {
+        // 解析EXCEL并根据注解完成必填校验及正则规则校验
+        List<AssessorDTO> assessorDTOList = ExcelUtils.readExcelWithCheck(AssessorDTO.class, new File("E:\\公估人员导入模板.xlsx"));
+        List<AssessorImportResponseAppDTO> appDTOS = toAssessorImportResponseAppDTOList(assessorDTOList, null);
+        System.out.println(appDTOS);
+    }
 }

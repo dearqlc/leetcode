@@ -25,6 +25,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -849,6 +850,30 @@ public class LeetCodeTest {
             }
         }
         System.out.println(Arrays.toString(arr));
+        Map<String, Integer> map = new HashMap<>();
+        map.put("123", null);
+        System.out.println(map);
     }
 
+    public boolean isCardID(String sId) {
+        String pattern = "^(\\d{15}$)|(\\d{17}(\\d|X|x)$)";
+        if (!Pattern.matches(pattern, sId)) {
+            return false;
+        }
+        // 身份证号码校验
+        int sum = 0;
+        int[] weights = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+        String codes = "10X98765432";
+        for (int i = 0; i < sId.length() - 1; i++) {
+            sum += Character.getNumericValue(sId.charAt(i)) * weights[i];
+        }
+        // 计算出来的最后一位身份证号码
+        char last = codes.charAt(sum % 11);
+        return sId.charAt(sId.length() - 1) == last;
+    }
+
+    @Test
+    public void t37() {
+        System.out.println(isCardID("330621200007178950"));
+    }
 }
