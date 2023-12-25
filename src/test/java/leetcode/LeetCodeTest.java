@@ -876,4 +876,9 @@ public class LeetCodeTest {
     public void t37() {
         System.out.println(isCardID("330621200007178950"));
     }
+
+    @Test
+    public void t38() {
+
+    }
 }

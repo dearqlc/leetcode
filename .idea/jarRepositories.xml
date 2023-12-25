@@ -4,6 +4,11 @@
     <remote-repository>
       <option name="id" value="cicsc-snapshots" />
       <option name="name" value="cicsc-snapshots" />
+      <option name="url" value="http://10.253.224.167:8081/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="cicsc-snapshots" />
+      <option name="name" value="cicsc-snapshots" />
       <option name="url" value="http://10.253.224.166:8081/repository/maven-public/" />
     </remote-repository>
     <remote-repository>
@@ -25,6 +30,11 @@
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="http://10.253.224.166:8081/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="http://10.253.224.167:8081/repository/maven-public/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="alimaven" />

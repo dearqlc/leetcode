@@ -165,5 +165,6 @@
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba.toolkit.common:toolkit-common-lang:1.1.5" level="project" />
+    <orderEntry type="library" name="Maven: cn.hutool:hutool-all:5.8.23" level="project" />
   </component>
 </module>
