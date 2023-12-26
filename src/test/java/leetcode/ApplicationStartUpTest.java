@@ -54,7 +54,7 @@ class ApplicationStartUpTest {
     /**
      * 环境(填UAT或PROD)
      */
-    private static final String ENV = "xxx";
+    private static final String ENV = "UAT";
     /**
      * 文件地址
      */
