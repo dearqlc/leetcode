@@ -54,7 +54,7 @@ class ApplicationStartUpTest {
     /**
      * 环境(填UAT或PROD)
      */
-    private static final String ENV = "UAT";
+    private static final String ENV = "PT";
     /**
      * 文件地址
      */
@@ -74,6 +74,9 @@ class ApplicationStartUpTest {
         } else if ("UAT".equals(ENV)) {
             SIGNATURE_URL = "http://10.207.132.176:8000/irdp/sign/getSignature";
             PROTOCOL_URL = "http://10.207.132.176:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
+        } else if ("PT".equals(ENV)) {
+            SIGNATURE_URL = "http://10.207.132.171:8000/irdp/sign/getSignature";
+            PROTOCOL_URL = "http://10.207.132.171:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
         }
 
         // 解析Excel
