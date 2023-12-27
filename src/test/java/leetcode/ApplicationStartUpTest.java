@@ -91,15 +91,17 @@ class ApplicationStartUpTest {
 
         // 计数
         int count = 1;
+        int success = 0;
         int size = agreementList.size();
         SignatureRequestDTO signatureRequestDTO = new SignatureRequestDTO(100);
 
         // 遍历Excel数据
         for (AgreementExcel agreement : agreementList) {
+            // 计数
+            count++;
 
             // 获取签名
             ResponseEntity<SignatureResponseDTO> response = restTemplate.postForEntity(SIGNATURE_URL, signatureRequestDTO, SignatureResponseDTO.class);
-
             if (response.getBody() == null) {
                 log.info("获取第{}/{}条签名失败, 协议号为{}！", count, size, agreement.getAgreementNo());
                 continue;
@@ -109,19 +111,25 @@ class ApplicationStartUpTest {
             PartnerProtocolRequestDTO protocolRequestDTO = getPartnerProtocolRequestDTO(response);
 
             // 填充合约数据
-            setAgreement(agreement, protocolRequestDTO);
-
             try {
-                // 同步到议价
-                log.info("同步第{}/{}条合作伙伴协议信息到议价平台" + ENV + "环境, request: {}", count, size, JSON.toJSONString(protocolRequestDTO));
-                ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
-                log.info("第{}/{}条{}, response:{}", count, size, protocolRequestDTO.getData().getAgentProtocolCode(), JSON.toJSONString(postForEntity.getBody()));
+                setAgreement(agreement, protocolRequestDTO);
             } catch (Exception e) {
-                log.error("同步第{}/{}条合作伙伴协议信息到议价平台" + ENV + "环境失败", count, size);
+                continue;
             }
 
-            count++;
+            // 同步到议价
+            try {
+                log.info("同步第{}条合作伙伴协议信息到议价平台" + ENV + "环境, request: {}", count, JSON.toJSONString(protocolRequestDTO));
+                ResponseEntity<PartnerAgrSyncResponseDTO> postForEntity = restTemplate.postForEntity(PROTOCOL_URL, protocolRequestDTO, PartnerAgrSyncResponseDTO.class);
+                log.info("第{}/{}条合约({})同步{}", count, size, protocolRequestDTO.getData().getAgentProtocolCode(), JSON.toJSONString(postForEntity.getBody().getMessage()).replace("\"", ""));
+                if ("成功".equals(postForEntity.getBody().getMessage())) {
+                    success++;
+                }
+            } catch (Exception e) {
+                log.error("第{}/{}条合约({})同步失败", count, size, protocolRequestDTO.getData().getAgentProtocolCode());
+            }
         }
+        log.info("同步完成,成功了{}/{}条合约", success, size);
     }
 
     /**
