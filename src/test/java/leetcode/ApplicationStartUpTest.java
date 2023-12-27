@@ -124,6 +124,10 @@ class ApplicationStartUpTest {
         }
     }
 
+    /**
+     * 环境(填UAT或PROD)
+     */
+    private static final String AGR_ENV = "PT";
     private final static String COOKIE_PT = "";
     private final static String COOKIE_PROD = "";
     private static final String AGREEMENT_SYNC_PATH_NAME = "E:\\xxx.xlsx";
@@ -133,19 +137,23 @@ class ApplicationStartUpTest {
      */
     @Test
     public void agreementSync() {
-        String str = "xxx";
 
         String AGR_URL = null;
         String ECO_URL = null;
         String COOKIE = null;
-        if ("prod".equals(str)) {
-            AGR_URL = AGR_PROD_URL;
-            ECO_URL = ECOLOGY_PROD_URL;
-            COOKIE = COOKIE_PROD;
-        } else if ("pt".equals(str)) {
-            AGR_URL = AGR_PT_URL;
-            ECO_URL = ECOLOGY_PT_URL;
-            COOKIE = COOKIE_PT;
+
+        // 选择环境
+        switch (ENV) {
+            case "PROD":
+                AGR_URL = AGR_PROD_URL;
+                ECO_URL = ECOLOGY_PROD_URL;
+                COOKIE = COOKIE_PROD;
+                break;
+            case "PT":
+                AGR_URL = AGR_PT_URL;
+                ECO_URL = ECOLOGY_PT_URL;
+                COOKIE = COOKIE_PT;
+                break;
         }
 
         // 解析EXCEL
