@@ -68,15 +68,19 @@ class ApplicationStartUpTest {
 
         String SIGNATURE_URL = null;
         String PROTOCOL_URL = null;
-        if ("PROD".equals(ENV)) {
-            SIGNATURE_URL = "http://10.206.192.117:80/irdp/sign/getSignature";
-            PROTOCOL_URL = "http://10.206.192.117:80/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
-        } else if ("UAT".equals(ENV)) {
-            SIGNATURE_URL = "http://10.207.132.176:8000/irdp/sign/getSignature";
-            PROTOCOL_URL = "http://10.207.132.176:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
-        } else if ("PT".equals(ENV)) {
-            SIGNATURE_URL = "http://10.207.132.171:8000/irdp/sign/getSignature";
-            PROTOCOL_URL = "http://10.207.132.171:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
+        switch (ENV) {
+            case "PROD":
+                SIGNATURE_URL = "http://10.206.192.117:80/irdp/sign/getSignature";
+                PROTOCOL_URL = "http://10.206.192.117:80/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
+                break;
+            case "UAT":
+                SIGNATURE_URL = "http://10.207.132.176:8000/irdp/sign/getSignature";
+                PROTOCOL_URL = "http://10.207.132.176:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
+                break;
+            case "PT":
+                SIGNATURE_URL = "http://10.207.132.171:8000/irdp/sign/getSignature";
+                PROTOCOL_URL = "http://10.207.132.171:8000/irdp/nwAgentAssoProtocol/insertProtocolByPartnerSystem";
+                break;
         }
 
         // 解析Excel
