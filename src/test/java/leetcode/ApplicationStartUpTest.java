@@ -90,7 +90,7 @@ class ApplicationStartUpTest {
         );
 
         // 计数
-        int count = 1;
+        int count = 0;
         int success = 0;
         int size = agreementList.size();
         SignatureRequestDTO signatureRequestDTO = new SignatureRequestDTO(100);
